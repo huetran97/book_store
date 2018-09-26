@@ -1,0 +1,30 @@
+{
+  "compilerOptions": {
+    "alwaysStrict": true,
+    "module": "commonjs",
+    "target": "es2016",
+    "noImplicitAny": false,
+    "moduleResolution": "node",
+    "strictNullChecks": false,
+    "allowSyntheticDefaultImports": false,
+    "typeRoots": [
+      "node_modules/@types"
+    ],
+    "sourceMap": false,
+    "outDir": "dist",
+    "baseUrl": ".",
+    "removeComments": true,
+    "lib": [
+      "es2017",
+      "dom",
+      "es6",
+      "es2016",
+      "esnext"
+    ],
+    "declaration": false
+  },
+  "include": [
+    "src",
+    "src/node_modules"
+  ]
+}

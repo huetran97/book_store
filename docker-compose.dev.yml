@@ -1,0 +1,12 @@
+version: "2"
+services:
+  mongodb:
+    image: mongo
+    volumes:
+      - ./mongodb:/data/db
+    ports:
+      - 27017:27017
+  cache:
+    image: redis
+    ports:
+      - 6379:6379

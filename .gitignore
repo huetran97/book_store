@@ -1,0 +1,8 @@
+*.lock
+*.log
+.DS_Store
+.idea
+dist
+node_modules
+!/src/node_modules/
+mongodb/
