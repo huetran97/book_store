@@ -7,12 +7,13 @@ import Language from './Language.resolve';
 import Publisher from './Publisher.resolve';
 import Store from './Store.resolve';
 import Subject from './Subject.resolve';
-import Purchase from './Purchase.resolve';
+import Bill from './Bill.resolve';
 import ShippingCost from './ShippingCost.resolve';
 import Promotion from './Promotion.resolve';
 import Event from './Event.resolve';
 import CmsGroup from './CmsGroup.resolve';
-// import StaffCmsGroup from './St'
+import Staff from './Staff.resolve';
+// import StaffCmsGroup from './Staf'
 
 export default [
     User,
@@ -24,9 +25,10 @@ export default [
     Publisher,
     Store,
     Subject,
-    Purchase,
+    Bill,
     ShippingCost,
     Promotion,
     Event,
-    CmsGroup
+    CmsGroup,
+    Staff
 ];

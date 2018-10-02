@@ -10,7 +10,7 @@ import Event from './other/Event.typeDef';
 import IssuingCompany from './other/IssuingCompany.typeDef';
 import Promotion from './other/Promotion.typeDef';
 import Publisher from './other/Publisher.typeDef';
-import Purchase from './other/Purchase.typeDef';
+import Bill from './other/Bill.typeDef';
 import ShippingCost from './other/ShippingCost.typeDef';
 import Store from './other/Store.typeDef';
 import User from './other/User.typeDef';
@@ -20,6 +20,8 @@ import StringMessage from './other/StringMessage.typeDef';
 import Language from './other/Language.typeDef';
 import DomainKnowledge from './other/DomainKnowledge.typeDef';
 import Subject from './other/Subject.typeDef';
+import Cart from './other/Cart.typeDef';
+import Staff from './other/Staff.typeDef';
 
 export default [
     mutation,
@@ -34,7 +36,7 @@ export default [
     IssuingCompany,
     Promotion,
     Publisher,
-    Purchase,
+    Bill,
     ShippingCost,
     Store,
     User,
@@ -43,5 +45,7 @@ export default [
     StringMessage,
     Language,
     DomainKnowledge,
-    Subject
+    Subject,
+    Cart,
+    Staff
 ];

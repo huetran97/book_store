@@ -23,6 +23,49 @@ const mutation = gql`
             id: String!
         ): StringMessage
 
+
+        addStaff(
+            user_name: String!,
+            email: String!
+            date_of_birth: Float,
+            sex: SEX,
+            id_card_number: String,
+            id_card_number_date: Float,
+            id_card_number_location: String,
+            tax_number: String,
+            insurrance_number: String,
+            start_work_date: Float!,
+            end_work_date: Float,
+            name: String!,
+            phone_number: String!,
+            store: String!
+            address: String,
+        ): Staff
+
+        updateStaff(
+            id: String!,
+            user_name: String,
+            email: String,
+            date_of_birth: Float,
+            sex: SEX,
+            id_card_number: String,
+            id_card_number_date: Float,
+            id_card_number_location: String,
+            tax_number: String,
+            insurrance_number: String,
+            start_work_date: Float,
+            end_work_date: Float,
+            name: String,
+            phone_number: String,
+            store: String,
+            address: String,
+            is_active: Boolean
+        ):Staff
+
+        removeStaff(
+            id: String!
+        ): StringMessage
+
         addStore(
             name: String!
             phone_number: String!
@@ -148,11 +191,11 @@ const mutation = gql`
             publication_date: Float,
             language: String!,
             domain_knowledge: String!,
-            subject: String!,
+            subjects: [String!],
             size: String,
             issuing_company: String!,
             print_length: Int,
-            cover_type: String,
+            cover_type: COVER_TYPE,
             store: String,
             amount: Float,
         ):Book
@@ -167,11 +210,11 @@ const mutation = gql`
             publication_date: Float,
             language: String,
             domain_knowledge: String,
-            subject: String,
+            subject: [String],
             size: String,
             issuing_company: String,
             print_length: Int,
-            cover_type: String,
+            cover_type: COVER_TYPE,
             is_active: Boolean
             store: String,
             amount: Float,

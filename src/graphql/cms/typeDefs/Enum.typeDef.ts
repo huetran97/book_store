@@ -1,12 +1,16 @@
 import gql from 'graphql-tag';
 
 const ENUM = gql`
-    enum DEGREE_TYPE {
-        UNIVERSITY,
-        COLLEGE,
-        VOCATIONAL_SCHOOL,
-        HIGH_SCHOOL
+    enum COVER_TYPE {
+        PAPERBACK
+        HARDCOVER
+        ENGLISH_BOOK
+        VIETNAMESE_BOOK     
     },
+    enum SEX{
+        MALE,
+        FEMALE
+    }
     enum CMS_GROUP_PREMISSION {
         BOOK_MANAGER,
         STAFF_MANAGER,

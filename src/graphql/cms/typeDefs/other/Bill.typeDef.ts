@@ -1,22 +1,25 @@
 import gql from 'graphql-tag';
 
-const purchase = gql`
-    type Purchase{
+const bill = gql`
+    type Bill{
         id: String
-        book: Book
+        user: User
+        cart: Cart
         status: String
         number: Float
         shipping: ShippingCost
-        amount: Float
+        shipping_address: String
         created_at: Float,
         updated_at: Float
+        total_amount: Float
+
     },
-    type ListPurchase {
+    type ListBill {
         offset: Int,
         limit: Int,
-        total_purchase : Int,
-        list_purchase: [Purchase]
+        total_bill : Int,
+        list_bill: [Bill]
     }
 `;
 
-export default purchase;
+export default bill;

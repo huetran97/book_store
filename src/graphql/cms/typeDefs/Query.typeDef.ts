@@ -13,6 +13,17 @@ const query = gql`
             is_active: Boolean
         ): ListUser
 
+        staff(
+            id: String!
+        ): Staff
+
+        staffs(
+            offset: Int,
+            limit: Int,
+            search: String,
+            is_active: Boolean
+        ): ListStaff
+
         author(
             id: String!
         ): Author
@@ -116,15 +127,15 @@ const query = gql`
             limit: Int,
         ): ListShippingCost
 
-        purchase(
+        bill(
             id: String!
-        ): Purchase
+        ): Bill
 
-        purchases(
+        bills(
             offset: Int,
             limit: Int,
             search: String
-        ): ListPurchase
+        ): Bill
 
         shipingCost(
             id: String!

@@ -11,17 +11,25 @@ export default {
 
             let language_data         = await Language.findOne({ _id: language });
             let domain_knowledge_data = await DomainKnowledge.findOne({ _id: domain_knowledge });
-            let subject_data          = await Subject.findOne({ _id: subject });
-            let author_data           = await Author.findOne({ _id: author });
-            let publisher_data        = await Publisher.findOne({ _id: publisher });
-            let issuing_company_data  = await IssuingCompany.findOne({ _id: issuing_company });
-            let store_data            = await Store.findOne({ _id: store });
 
-            if (!language_data || !domain_knowledge_data || !subject_data || !author_data || !publisher_data || !issuing_company_data || !store_data) throw new Error('Invalid data');
+            let author_data          = await Author.findOne({ _id: author });
+            let publisher_data       = await Publisher.findOne({ _id: publisher });
+            let issuing_company_data = await IssuingCompany.findOne({ _id: issuing_company });
+            let store_data           = await Store.findOne({ _id: store });
 
-            if (domain_knowledge_data.language.toString() !== language_data._id.toString() ||
-                subject_data.domain_knowledge.toString() !== domain_knowledge_data._id.toString()
-            ) throw new Error('Invalid data1');
+            if (!language_data || !domain_knowledge_data || !author_data || !publisher_data || !issuing_company_data || !store_data) throw new Error('Invalid data');
+
+            for (let subject_id of subject) {
+                let subject_data = await Subject.findOne({ _id: subject_id });
+                if (!subject_data)
+                    throw new Error('Invalid data');
+
+                if (domain_knowledge_data.language.toString() !== language_data._id.toString() ||
+                    subject_data.domain_knowledge.toString() !== domain_knowledge_data._id.toString()
+                ) throw new Error('Invalid data1');
+
+            }
+
 
             let book_data = new Book({
                 name: name,
@@ -50,17 +58,24 @@ export default {
 
             let language_data         = await Language.findOne({ _id: language });
             let domain_knowledge_data = await DomainKnowledge.findOne({ _id: domain_knowledge });
-            let subject_data          = await Subject.findOne({ _id: subject });
-            let author_data           = await Author.findOne({ _id: author });
-            let publisher_data        = await Publisher.findOne({ _id: publisher });
-            let issuing_company_data  = await IssuingCompany.findOne({ _id: issuing_company });
-            let store_data            = await Store.findOne({ _id: store });
 
-            if (!language_data || !domain_knowledge_data || !subject_data || !author_data || !publisher_data || !issuing_company_data || !store_data) throw new Error('Invalid data');
+            let author_data          = await Author.findOne({ _id: author });
+            let publisher_data       = await Publisher.findOne({ _id: publisher });
+            let issuing_company_data = await IssuingCompany.findOne({ _id: issuing_company });
+            let store_data           = await Store.findOne({ _id: store });
 
-            if (domain_knowledge_data.language.toString() !== language_data._id.toString() ||
-                subject_data.domain_knowledge.toString() !== domain_knowledge_data._id.toString()
-            ) throw new Error('Invalid data1');
+            if (!language_data || !domain_knowledge_data || !author_data || !publisher_data || !issuing_company_data || !store_data) throw new Error('Invalid data');
+
+            for (let subject_id of subject) {
+                let subject_data = await Subject.findOne({ _id: subject_id });
+                if (!subject_data)
+                    throw new Error('Invalid data');
+
+                if (domain_knowledge_data.language.toString() !== language_data._id.toString() ||
+                    subject_data.domain_knowledge.toString() !== domain_knowledge_data._id.toString()
+                ) throw new Error('Invalid data1');
+
+            }
 
             if (name)
                 update.name = name;
@@ -189,8 +204,12 @@ export default {
         domain_knowledge: async (book) => {
             return await DomainKnowledge.findOne({ _id: book.domain_knowledge });
         },
-        subject: async (book) => {
-            return await Subject.findOne({ _id: book.subject });
+        subjects: async (book) => {
+            let total = book.subject.length;
+            return {
+                total_subject: total,
+                list_subject: await Subject.find({ _id: { $in: book.subject } })
+            };
         },
         author: async (book) => {
             return await Author.findOne({ _id: book.auth });

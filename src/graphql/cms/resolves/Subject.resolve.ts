@@ -1,4 +1,4 @@
-import { DomainKnowledge, Subject , } from '@private/models';
+import { DomainKnowledge, Subject } from '@private/models';
 import Validate from '../../../helpers/validate';
 import * as Joi from 'joi';
 import * as _ from 'lodash';
@@ -61,7 +61,6 @@ export default {
 
             let filter: any = {};
 
-
             if (_.isBoolean(args.is_active)) {
                 filter.is_active = args.is_active;
             }
@@ -78,9 +77,10 @@ export default {
         }
     },
     ListSubject: {
-        total_subject: async ({ args }) => {
+        total_subject: async ({args} ) => {
             let filter: any = {};
-
+            console.log('args_hih', args);
+            if(args)
             if (_.isBoolean(args.is_active)) {
                 filter.is_active = args.is_active;
             }
@@ -90,7 +90,7 @@ export default {
     },
     Subject: {
         domain_knowledge: async (subject) => {
-            return await DomainKnowledge.findOne({_id: subject.domain_knowledge});
+            return await DomainKnowledge.findOne({ _id: subject.domain_knowledge });
         }
     }
 };

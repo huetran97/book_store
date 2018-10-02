@@ -171,7 +171,7 @@ server.listen(3001);
 console.log(`🚀 Server ready at http://localhost:${3001}`, 'other', 'log');
 
 serverCmsGraphql.applyMiddleware({ app: graphqlExpress, path: '/graphql/cms' });
-serverWebBuilderGraphql.applyMiddleware({ app: graphqlExpress, path: '/graphql/web_builder' });
+serverWebBuilderGraphql.applyMiddleware({ app: graphqlExpress, path: '/graphql/web' });
 
 
 graphqlExpress.listen({

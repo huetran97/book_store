@@ -1,4 +1,4 @@
-import { Purchase } from '@private/models';
+import { Bill } from '@private/models';
 import Validate from '../../../helpers/validate';
 import * as Joi from 'joi';
 import { User } from '@private/models/index';
@@ -7,14 +7,14 @@ import { changeAlias } from '../../../helpers';
 
 export default {
     Query: {
-        purchase: async (root, { id }) => {
-            let purchase_data = await Purchase.findOne({ _id: id });
-            if (!purchase_data)
-                throw new Error('Purchase not found');
+        bill: async (root, { id }) => {
+            let bill_data = await Bill.findOne({ _id: id });
+            if (!bill_data)
+                throw new Error('Bill not found');
 
-            return purchase_data;
+            return bill_data;
         },
-        purchases: async (root, args) => {
+        bills: async (root, args) => {
             args = new Validate(args)
                 .joi({
                     offset: Joi.number().integer().optional().min(0).default(0),
@@ -38,13 +38,13 @@ export default {
             }
 
 
-            let list = Purchase
+            let list = Bill
                 .find(filter)
                 .skip(args.offset)
                 .limit(args.limit);
 
             return {
-                list_purchase: await list,
+                list_bill: await list,
                 args
             };
         }
