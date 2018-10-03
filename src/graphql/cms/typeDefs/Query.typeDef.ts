@@ -92,6 +92,8 @@ const query = gql`
             search: String,
             is_active: Boolean
         ): ListDomainKnowledge
+        
+        subject(id: String!): Subject
 
         subjects(
             offset: Int,

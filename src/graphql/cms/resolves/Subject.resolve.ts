@@ -52,6 +52,9 @@ export default {
         }
     },
     Query: {
+        subject: async (root, { id }) => {
+            return await Subject.findOne({ _id: id });
+        },
         subjects: async (root, args) => {
             args = new Validate(args)
                 .joi({
@@ -77,13 +80,13 @@ export default {
         }
     },
     ListSubject: {
-        total_subject: async ({args} ) => {
+        total_subject: async ({ args }) => {
             let filter: any = {};
             console.log('args_hih', args);
-            if(args)
-            if (_.isBoolean(args.is_active)) {
-                filter.is_active = args.is_active;
-            }
+            if (args)
+                if (_.isBoolean(args.is_active)) {
+                    filter.is_active = args.is_active;
+                }
 
             return await Subject.find(filter).countDocuments();
         }
