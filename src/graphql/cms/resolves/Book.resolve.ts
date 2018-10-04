@@ -193,6 +193,7 @@ export default {
 
             return {
                 list_book: await list,
+                total_book: await list.count(),
                 args
             };
         }

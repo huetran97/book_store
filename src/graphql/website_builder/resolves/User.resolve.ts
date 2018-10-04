@@ -66,7 +66,8 @@ export default {
     },
     Query: {
         user: async (root, {}, { user }) => {
-            return await user;
+            console.log('user', user);
+            return await User.findOne({ _id: user._id });
         }
 
     }

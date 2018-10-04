@@ -13,7 +13,7 @@ const book = gql`
         publication_date: Float
         language: Language,
         domain_knowledge: DomainKnowledge,
-        subject : Subject,
+        subjects : Subject,
         size: String
         issuing_company: IssuingCompany
         print_length: Float

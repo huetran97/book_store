@@ -8,6 +8,7 @@
     "test": "NODE_ENV=test mocha -r ts-node/register test/**/*.test.ts --file test/setup.ts"
   },
   "dependencies": {
+    "apollo-server": "^2.1.0",
     "apollo-server-express": "^2.1.0",
     "compression": "^1.7.3",
     "cors": "^2.8.4",

@@ -16,6 +16,9 @@ import * as graphql from './graphql';
 // import { redis } from './caches';
 import dev from './helpers/dev';
 import * as moment from 'moment-timezone';
+import { verify } from 'jsonwebtoken';
+import { JWT_SECRET } from '@private/configs/index';
+import {User} from '@private/models';
 
 const { makeExecutableSchema, addMockFunctionsToSchema } = require('graphql-tools');
 
@@ -129,10 +132,10 @@ const serverCmsGraphql = new ApolloServer({
 
 let schemaWebBuilderGraphql = makeExecutableSchema({
     typeDefs: graphql.web_builder.typeDef,
-    resolvers: graphql.web_builder.resolves
-    // directiveResolvers: {
-    //     requireLogged: graphql.machine.directiveResolvers.requireLogged
-    // }
+    resolvers: graphql.web_builder.resolves,
+    directiveResolvers: {
+        requireLogged: graphql.web_builder.directiveResolvers.requireLogged
+    }
 });
 
 const serverWebBuilderGraphql = new ApolloServer({
@@ -142,10 +145,10 @@ const serverWebBuilderGraphql = new ApolloServer({
         console.log(error, 'other', 'error');
         return error;
     },
-    // formatResponse: response => {
-    //     console.log(response);
-    //     return response;
-    // },
+    formatResponse: response => {
+        console.log(response);
+        return response;
+    },
     context: async ({ req }) => {
         let context: any = {
             // dataloaders: createLoaders()
@@ -154,9 +157,14 @@ const serverWebBuilderGraphql = new ApolloServer({
         try {
             const token = req.headers.authorization;
             if (token) {
+                let tokenData: any = verify(token, JWT_SECRET);
+                console.log('token', tokenData);
+                let user_data = await User.findOne({_id: tokenData.id});
+                context.user = user_data;
                 // try to retrieve a user with the token
-                // let machine       = await getMachineDataFromAccessToken(token);
-                // context.machine = machine;
+                // let u     = await getStaffDataFromAccessToken(token);
+                // context.staff = staff;
+                // staffId = staff.id;
             }
         } catch (error) {
             console.log(error, 'other', 'error');
