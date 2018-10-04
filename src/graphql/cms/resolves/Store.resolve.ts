@@ -3,7 +3,7 @@ import { changeAlias } from '../../../helpers';
 import Validate from '../../../helpers/validate';
 import * as Joi from 'joi';
 import * as _ from 'lodash';
-import { escapeStringRegexp } from 'escape-string-regexp';
+import * as  escapeStringRegexp from 'escape-string-regexp';
 
 export default {
     Mutation: {

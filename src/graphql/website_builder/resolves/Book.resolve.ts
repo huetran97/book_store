@@ -2,7 +2,7 @@ import { Author, Book, DomainKnowledge, IssuingCompany, Language, Publisher, Sto
 import * as _ from 'lodash';
 import Validate from '../../../helpers/validate';
 import * as Joi from 'joi';
-import { escapeStringRegexp } from 'escape-string-regexp';
+import * as  escapeStringRegexp from 'escape-string-regexp';
 import { changeAlias } from '../../../helpers';
 
 export default {

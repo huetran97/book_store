@@ -3,7 +3,7 @@ import Validate from '../../../helpers/validate';
 import * as Joi from 'joi';
 import { changeAlias, createHash, randomString } from '../../../helpers';
 import * as _ from 'lodash';
-import { escapeStringRegexp } from 'escape-string-regexp';
+import * as  escapeStringRegexp from 'escape-string-regexp';
 import { DEFAULT_PASSWORD } from '../../../configs';
 
 export default {

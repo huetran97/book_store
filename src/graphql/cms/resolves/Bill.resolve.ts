@@ -2,7 +2,7 @@ import { Bill } from '@private/models';
 import Validate from '../../../helpers/validate';
 import * as Joi from 'joi';
 import { User } from '@private/models/index';
-import { escapeStringRegexp } from 'escape-string-regexp';
+import * as  escapeStringRegexp from 'escape-string-regexp';
 import { changeAlias } from '../../../helpers';
 
 export default {
