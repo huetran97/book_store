@@ -3,7 +3,7 @@ import Validate from '../../../helpers/validate';
 import * as Joi from 'joi';
 import { changeAlias, createHash, randomString } from '../../../helpers';
 import * as _ from 'lodash';
-import { escapeRegExp } from 'tslint/lib/utils';
+import { escapeStringRegexp } from 'escape-string-regexp';
 import { DEFAULT_PASSWORD } from '../../../configs';
 
 export default {
@@ -89,9 +89,9 @@ export default {
 
             if (args.search) {
                 filter.$or = [
-                    { name_slug: new RegExp(escapeRegExp(changeAlias(args.search)), 'gi') },
-                    { phone_number: new RegExp(escapeRegExp(args.search), 'gi') },
-                    { email: new RegExp(escapeRegExp(args.search), 'gi') }
+                    { name_slug: new RegExp(escapeStringRegexp(changeAlias(args.search)), 'gi') },
+                    { phone_number: new RegExp(escapeStringRegexp(args.search), 'gi') },
+                    { email: new RegExp(escapeStringRegexp(args.search), 'gi') }
                 ];
             }
 
@@ -116,9 +116,9 @@ export default {
 
             if (args.search) {
                 filter.$or = [
-                    { name_slug: new RegExp(escapeRegExp(changeAlias(args.search)), 'gi') },
-                    { phone_number: new RegExp(escapeRegExp(args.search), 'gi') },
-                    { email: new RegExp(escapeRegExp(args.search), 'gi') }
+                    { name_slug: new RegExp(escapeStringRegexp(changeAlias(args.search)), 'gi') },
+                    { phone_number: new RegExp(escapeStringRegexp(args.search), 'gi') },
+                    { email: new RegExp(escapeStringRegexp(args.search), 'gi') }
                 ];
             }
 

@@ -3,7 +3,7 @@ import { changeAlias } from '../../../helpers';
 import Validate from '../../../helpers/validate';
 import * as Joi from 'joi';
 import * as _ from 'lodash';
-import { escapeRegExp } from 'tslint/lib/utils';
+import { escapeStringRegexp } from 'escape-string-regexp';
 
 export default {
     Mutation: {
@@ -71,7 +71,7 @@ export default {
 
             if (args.search) {
                 filter.$or = [
-                    { name_slug: new RegExp(escapeRegExp(changeAlias(args.search)), 'gi') }
+                    { name_slug: new RegExp(escapeStringRegexp(changeAlias(args.search)), 'gi') }
                 ];
             }
 
@@ -96,7 +96,7 @@ export default {
 
             if (args.search) {
                 filter.$or = [
-                    { name_slug: new RegExp(escapeRegExp(changeAlias(args.search)), 'gi') },
+                    { name_slug: new RegExp(escapeStringRegexp(changeAlias(args.search)), 'gi') },
                 ];
             }
 

@@ -2,7 +2,7 @@ import { Author, Book, DomainKnowledge, IssuingCompany, Language, Publisher, Sto
 import * as _ from 'lodash';
 import Validate from '../../../helpers/validate';
 import * as Joi from 'joi';
-import { escapeRegExp } from 'tslint/lib/utils';
+import { escapeStringRegexp } from 'escape-string-regexp';
 import { changeAlias } from '../../../helpers';
 
 export default {
@@ -176,7 +176,7 @@ export default {
 
             if (args.search) {
                 filter.$or = [
-                    { name_slug: new RegExp(escapeRegExp(changeAlias(args.search)), 'gi') }
+                    { name_slug: new RegExp(escapeStringRegexp(changeAlias(args.search)), 'gi') }
                 ];
             }
 

@@ -2,7 +2,7 @@ import { Bill } from '@private/models';
 import Validate from '../../../helpers/validate';
 import * as Joi from 'joi';
 import { User } from '@private/models/index';
-import { escapeRegExp } from 'tslint/lib/utils';
+import { escapeStringRegexp } from 'escape-string-regexp';
 import { changeAlias } from '../../../helpers';
 
 export default {
@@ -27,7 +27,7 @@ export default {
             if (args.search) {
                 let user_id = await User.find({
                     $or: [
-                        { name_slug: new RegExp(escapeRegExp(changeAlias(args.search)), 'gi') },
+                        { name_slug: new RegExp(escapeStringRegexp(changeAlias(args.search)), 'gi') },
                         { phone_number: args.search }
                     ]
                 }).distinct('_id');
