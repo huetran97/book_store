@@ -1,6 +1,7 @@
 version: "2"
 services:
   mongodb:
+
     image: mongo
     volumes:
       - ./mongodb:/data/db

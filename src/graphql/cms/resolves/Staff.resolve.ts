@@ -36,7 +36,7 @@ export default {
             return await staff.save();
         },
 
-        updateUser: async (root, {
+        updateStaff: async (root, {
             id, email, date_of_birth, sex, id_card_number, id_card_number_date, id_card_number_location,
             tax_number, insurrance_number, start_work_date, end_work_date, name, phone_number, store, address, is_active
         }) => {

@@ -61,6 +61,8 @@ export default {
                 is_active: true
             }, { $set: { is_active: false } }, { new: true });
 
+            console.log('user', user_remove);
+
             if (!user_remove)
                 throw new Error('Can not remove user');
 

@@ -1,0 +1,32 @@
+version: "2"
+services:
+
+  api:
+    image: registry.gitlab.com/huetran97/book-store/api:latest
+    ports:
+      - 3001:3001
+      - 4001:4001
+    depends_on:
+      - mongodb
+      - cache
+    environment:
+      JWT_SECRET: 123456
+      MONGODB_URI: mongodb://mongodb:27017/demo
+      REDIS_HOST: cache
+      REDIS_PORT: 6379
+      REDIS_PREFIX: demo
+      DEFAULT_PASSWORD: 123456
+      TIMEZONE: Asia/Ho_Chi_Minh
+      TOKEN_WEB_SALT: a
+      TOKEN_CMS_SALT: a
+      ACCESS_TOKEN_CMS_EXPIRE_IN: 1y
+      ACCESS_TOKEN_WEB_EXPIRE_IN: 1y
+      REFRESH_TOKEN_CMS_EXPIRE_IN: 1y
+      REFRESH_TOKEN_WEB_EXPIRE_IN: 1y
+
+  mongodb:
+    image: mongo
+    volumes:
+      - ./mongodb:/data/db
+  cache:
+    image: redis
