@@ -5,6 +5,8 @@ import { changeAlias, createHash, randomString } from '../../../helpers';
 import * as _ from 'lodash';
 import * as  escapeStringRegexp from 'escape-string-regexp';
 import { DEFAULT_PASSWORD } from '../../../configs';
+import Exception from '../../../exeptions/Exception';
+import ExceptionCode from '../../../exeptions/ExceptionCode';
 
 export default {
     Mutation: {
@@ -44,7 +46,7 @@ export default {
             let staff_data = await Staff.findOne({ _id: id });
 
             if (!staff_data)
-                throw new Error('Staff not found');
+                throw new Exception('Staff not found',ExceptionCode.STAFF_NOT_FOUND );
 
             if (name) {
                 staff_data.name      = name;
@@ -85,7 +87,7 @@ export default {
             if (store) {
                 let store_data = await Store.findOne({ _id: store });
                 if (!store_data)
-                    throw new Error('Store not found');
+                    throw new Exception('Store not found', ExceptionCode.STORE_NOT_FOUND);
                 staff_data.store = store;
             }
 
@@ -110,7 +112,7 @@ export default {
             }, { $set: { is_active: false } }, { new: true });
 
             if (!user_remove)
-                throw new Error('Can not remove Staff');
+                throw new Exception('Can not remove Staff', ExceptionCode.CAN_NOT_REMOVE_STAFF);
 
             return {
                 message: 'Remove Staff successful'

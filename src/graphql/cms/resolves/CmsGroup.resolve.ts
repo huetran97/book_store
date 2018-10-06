@@ -1,5 +1,7 @@
 import { CmsGroup, StaffCmsGroup, User } from '@private/models';
 import Validate, { isMongoObjectId } from '../../../helpers/validate';
+import Exception from '../../../exeptions/Exception';
+import ExceptionCode from '../../../exeptions/ExceptionCode';
 
 export default {
     Query: {
@@ -13,7 +15,9 @@ export default {
                     id: isMongoObjectId()
                 }).validate();
 
-            return await CmsGroup.findOne({ _id: id });
+            let data = await CmsGroup.findOne({ _id: id });
+            if(!data)
+                throw new Exception('Cms group not found', ExceptionCode.CMS_GROUP_NOT_FOUND)
         }
     },
     Mutation: {
@@ -43,7 +47,7 @@ export default {
             let cmsGroupUpdated = await CmsGroup.findOneAndUpdate({ _id: cms_group_id }, { $set: update }, { new: true });
 
             if (!cmsGroupUpdated)
-                throw new Error('Can not update cms group!');
+                throw new Exception('Can not update cms group!', ExceptionCode.CAN_NOT_UPDATE_CMS_GROUP);
 
             return cmsGroupUpdated;
         }

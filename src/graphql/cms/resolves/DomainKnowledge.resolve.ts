@@ -2,6 +2,8 @@ import { DomainKnowledge, Language } from '@private/models';
 import Validate from '../../../helpers/validate';
 import * as Joi from 'joi';
 import * as _ from 'lodash';
+import Exception from '../../../exeptions/Exception';
+import ExceptionCode from '../../../exeptions/ExceptionCode';
 
 export default {
     Mutation: {
@@ -53,6 +55,13 @@ export default {
         }
     },
     Query: {
+        domainKnowledge:async(root, {id})=>{
+            let domain_knowledge_data = await DomainKnowledge.findOne({_id: id});
+            if(!domain_knowledge_data)
+                throw new Exception('Domain knowledge not found', ExceptionCode.DOMAIN_KNOWLEDGE_NOT_FOUND);
+
+            return domain_knowledge_data;
+        },
         domainKnowledges: async (root, args) => {
             args = new Validate(args)
                 .joi({

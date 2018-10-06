@@ -5,6 +5,8 @@ import { changeAlias, createHash, randomString } from '../../../helpers';
 import * as _ from 'lodash';
 import * as  escapeStringRegexp from 'escape-string-regexp';
 import { DEFAULT_PASSWORD } from '../../../configs';
+import Exception from '../../../exeptions/Exception';
+import ExceptionCode from '../../../exeptions/ExceptionCode';
 
 export default {
     Mutation: {
@@ -30,7 +32,7 @@ export default {
             let user_data = await User.findOne({ _id: id });
 
             if (!user_data)
-                throw new Error('User not found');
+                throw new Exception('User not found', ExceptionCode.USER_NOT_FOUND);
 
             if (name) {
                 user_data.name      = name;
@@ -64,7 +66,7 @@ export default {
             console.log('user', user_remove);
 
             if (!user_remove)
-                throw new Error('Can not remove user');
+                throw new Exception('Can not remove user', ExceptionCode.CAN_NOT_REMOVE_USER);
 
             return {
                 message: 'Remove user successful'

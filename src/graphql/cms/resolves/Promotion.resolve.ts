@@ -1,6 +1,8 @@
 import { Book, Event, Promotion } from '@private/models';
 import Validate from '../../../helpers/validate';
 import * as Joi from 'joi';
+import Exception from '../../../exeptions/Exception';
+import ExceptionCode from '../../../exeptions/ExceptionCode';
 
 export default {
     Mutation: {
@@ -18,7 +20,7 @@ export default {
             if (book) {
                 let book_data = await Book.findOne({ _id: book });
                 if (!book_data)
-                    throw new Error('Book not found');
+                    throw new Exception('Book not found', ExceptionCode.BOOK_NOT_FOUND);
 
                 update.book = book;
             }
@@ -26,7 +28,7 @@ export default {
             if (event) {
                 let event_data = await Event.findOne({ _id: event });
                 if (!event_data)
-                    throw new Error('Event not found');
+                    throw new Exception('Event not found', ExceptionCode.EVENT_NOT_FOUND);
                 update.event = event;
 
             }
@@ -37,7 +39,7 @@ export default {
              let promotion_updated = await Promotion.findOneAndUpdate({ _id: id }, { $set: update }, { new: true });
 
             if (!promotion_updated)
-                throw new Error('Can not updated Promotion');
+                throw new Exception('Can not updated Promotion', ExceptionCode.CAN_NOT_UPDATE_PROMOTION);
 
             return promotion_updated;
         },
@@ -46,7 +48,7 @@ export default {
             let promotion_removed = await Promotion.findByIdAndRemove({ _id: id });
 
             if (!promotion_removed)
-                throw new Error('Can not remove Event');
+                throw new Exception('Can not remove Promotion', ExceptionCode.CAN_NOT_REMOVE_PROMOTION);
 
             return {
                 message: 'Remove Event successful'

@@ -6,45 +6,7 @@ import Exception from '../../../exeptions/Exception';
 import ExceptionCode from '../../../exeptions/ExceptionCode';
 
 export default {
-    Mutation: {
-        addLanguage: async (root, { name }) => {
-            let language = new Language({
-                name: name
-            });
-            return await language.save();
-        },
-        updateLanguage: async (root, { id, name, is_active }) => {
-            let update: any = {};
 
-            if (name) {
-                update.name = name;
-            }
-
-            if (_.isBoolean(is_active))
-                update.is_active = is_active;
-
-            let language_updated = await Language.findOneAndUpdate({ _id: id }, { $set: update }, { new: true });
-
-            if (!language_updated)
-                throw new Exception('Can not updated Language', ExceptionCode.CAN_NOT_UPDATE_LANGUAGE);
-
-            return language_updated;
-        },
-
-        removeLanguage: async (root, { id }) => {
-            let language_removed = await Language.findOneAndUpdate({
-                _id: id,
-                is_active: true
-            }, { $set: { is_active: false } }, { new: true });
-
-            if (!language_removed)
-                throw new Exception('Can not remove Language', ExceptionCode.CAN_NOT_REMOVE_LANGUAGE);
-
-            return {
-                message: 'Remove Language successful'
-            };
-        }
-    },
     Query: {
         language: async (root, { id }) => {
             let language_data = await Language.findOne({ _id: id });

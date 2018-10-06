@@ -7,7 +7,8 @@ import { changeAlias } from '../../../helpers';
 
 export default {
     Mutation: {
-        addBook: async (root, { name, description, author, price, publisher, publication_date, language, domain_knowledge, subject, size, issuing_company, print_length, cover_type, store, amount }) => {
+        addBook: async (root, { name, description, author, price, publisher, publication_date, language,
+            domain_knowledge, subject, size, issuing_company, print_length, cover_type, store, amount, thumbnail }) => {
 
             let language_data         = await Language.findOne({ _id: language });
             let domain_knowledge_data = await DomainKnowledge.findOne({ _id: domain_knowledge });
@@ -46,13 +47,16 @@ export default {
                 print_length: print_length,
                 cover_type: cover_type,
                 store: store,
+                thumbnail: thumbnail,
                 amount: amount
             });
             return await book_data.save();
         },
         updateBook: async (root, {
             id, name, description, author, price, publisher, publication_date,
-            language, domain_knowledge, subject, size, issuing_company, print_length, cover_type, store, amount, is_active
+            language, domain_knowledge, subject, size, issuing_company,
+            thumbnail,
+            print_length, cover_type, store, amount, is_active
         }) => {
             let update: any = {};
 
@@ -82,6 +86,9 @@ export default {
 
             if (description)
                 update.description = description;
+
+            if(thumbnail)
+                update.thumbnail= thumbnail;
 
             if (author) {
                 let author_data = await Author.findOne({ _id: author });

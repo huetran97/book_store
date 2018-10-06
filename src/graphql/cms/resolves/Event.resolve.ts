@@ -1,6 +1,8 @@
 import { Event, Promotion } from '@private/models';
 import Validate from '../../../helpers/validate';
 import * as Joi from 'joi';
+import Exception from '../../../exeptions/Exception';
+import ExceptionCode from '../../../exeptions/ExceptionCode';
 
 export default {
     Mutation: {
@@ -41,7 +43,7 @@ export default {
             let event_updated = await Event.findOneAndUpdate({ _id: id }, { $set: update }, { new: true });
 
             if (!event_updated)
-                throw new Error('Can not updated Event');
+                throw new Exception('Can not updated Event', ExceptionCode.CAN_NOT_UPDATE_EVENT);
 
             return event_updated;
         },
@@ -50,11 +52,11 @@ export default {
             let promotion_data = await Promotion.findOne({ event: id });
 
             if (promotion_data)
-                throw new Error('You can not Event');
+                throw new Exception('Promotion not found', ExceptionCode.PROMOTION_NOT_FOUND);
 
             let event_removed = await Event.findOneAndRemove({ _id: id });
             if (!event_removed)
-                throw new Error('Can not remove Event');
+                throw new Exception('Can not remove Event',ExceptionCode.CAN_NOT_REMOVE_EVENT);
 
             return {
                 message: 'Remove Event successful'
@@ -63,7 +65,11 @@ export default {
     },
     Query: {
         event: async (root, { id }) => {
-            return await Event.findOne({ _id: id });
+            let event_data= await Event.findOne({ _id: id });
+            if(!event_data)
+                throw new Exception('Event not found', ExceptionCode.EVENT_NOT_FOUND);
+
+            return event_data;
         },
         events: async (root, args) => {
             args = new Validate(args)

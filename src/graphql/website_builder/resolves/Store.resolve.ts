@@ -8,59 +8,11 @@ import Exception from '../../../exeptions/Exception';
 import ExceptionCode from '../../../exeptions/ExceptionCode';
 
 export default {
-    Mutation: {
-        addStore: async (root, { name, phone_number, address }) => {
-            let store = new Store({
-                name: name,
-                name_slug: changeAlias(name),
-                phone_number: phone_number,
-                address: address
-            });
-            return await store.save();
-        },
-        updateStore: async (root, { id, name, phone_number, address, is_active }) => {
-            let update: any = {};
 
-            if (name) {
-                update.name      = name;
-                update.name_slug = changeAlias(name);
-            }
-
-            if (phone_number)
-                update.phone_number = phone_number;
-
-            if (address)
-                update.address = address;
-
-            if (_.isBoolean(is_active))
-                update.is_active = is_active;
-
-            let store_updated = await Store.findOneAndUpdate({ _id: id }, { $set: update }, { new: true });
-
-            if (!store_updated)
-                throw new Exception('Can not updated Store', ExceptionCode.CAN_NOT_UPDATE_STORE);
-
-            return store_updated;
-        },
-
-        removePublisher: async (root, { id }) => {
-            let store_removed = await Store.findOneAndUpdate({
-                _id: id,
-                is_active: true
-            }, { $set: { is_active: false } }, { new: true });
-
-            if (!store_removed)
-                throw new Exception('Can not remove Store', ExceptionCode.CAN_NOT_REMOVE_STORE);
-
-            return {
-                message: 'Remove Publisher successful'
-            };
-        }
-    },
     Query: {
         store: async (root, { id }) => {
             let store = await Store.findOne({ _id: id });
-            if(!store)
+            if (!store)
                 throw new Exception('Store not found', ExceptionCode.STORE_NOT_FOUND);
 
             return store;
@@ -102,7 +54,7 @@ export default {
 
             if (args.search) {
                 filter.$or = [
-                    { name_slug: new RegExp(escapeStringRegexp(changeAlias(args.search)), 'gi') },
+                    { name_slug: new RegExp(escapeStringRegexp(changeAlias(args.search)), 'gi') }
                 ];
             }
 

@@ -2,6 +2,8 @@ import { DomainKnowledge, Subject } from '@private/models';
 import Validate from '../../../helpers/validate';
 import * as Joi from 'joi';
 import * as _ from 'lodash';
+import Exception from '../../../exeptions/Exception';
+import ExceptionCode from '../../../exeptions/ExceptionCode';
 
 export default {
     Mutation: {
@@ -21,7 +23,7 @@ export default {
             if (domain_knowledge) {
                 let domain_knowledge_data = await DomainKnowledge.findOne({ _id: domain_knowledge });
 
-                if (!domain_knowledge_data) throw new Error('Domain Knowledge not found');
+                if (!domain_knowledge_data) throw new Exception('Domain Knowledge not found', ExceptionCode.DOMAIN_KNOWLEDGE_NOT_FOUND);
 
                 update.domain_knowledge = domain_knowledge;
             }
@@ -32,7 +34,7 @@ export default {
             let subject_updated = await Subject.findOneAndUpdate({ _id: id }, { $set: update }, { new: true });
 
             if (!subject_updated)
-                throw new Error('Can not updated Subject');
+                throw new Exception('Can not updated Subject', ExceptionCode.CAN_NOT_UPDATE_SUBJECT);
 
             return subject_updated;
         },
@@ -44,7 +46,7 @@ export default {
             }, { $set: { is_active: false } }, { new: true });
 
             if (!subject_removed)
-                throw new Error('Can not remove Subject ');
+                throw new Exception('Can not remove Subject ', ExceptionCode.CAN_NOT_REMOVE_SUBJECT);
 
             return {
                 message: 'Remove Subject successful'
@@ -82,7 +84,6 @@ export default {
     ListSubject: {
         total_subject: async ({ args }) => {
             let filter: any = {};
-            console.log('args_hih', args);
             if (args)
                 if (_.isBoolean(args.is_active)) {
                     filter.is_active = args.is_active;

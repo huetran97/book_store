@@ -5,6 +5,8 @@ import Validate from '../../../helpers/validate';
 import * as Joi from 'joi';
 import * as _ from 'lodash';
 import * as  escapeStringRegexp from 'escape-string-regexp';
+import Exception from '../../../exeptions/Exception';
+import ExceptionCode from '../../../exeptions/ExceptionCode';
 
 export default {
     Mutation: {
@@ -33,7 +35,7 @@ export default {
             let authorUpdated = await Author.findOneAndUpdate({ _id: id }, { $set: update }, { new: true });
 
             if (!authorUpdated)
-                throw new Error('Can not updated Author');
+                throw new Exception('Can not updated Author', ExceptionCode.CAN_NOT_UPDATE_AUTHOR);
 
             return authorUpdated;
         },
@@ -45,7 +47,7 @@ export default {
             }, { $set: { is_active: false } }, { new: true });
 
             if (!authorRemoved)
-                throw new Error('Can not remove Author');
+                throw new Exception('Can not remove Author', ExceptionCode.CAN_NOT_REMOVE_AUTHOR);
 
             return {
                 message: 'Remove author successful'
@@ -54,7 +56,11 @@ export default {
     },
     Query: {
         author: async (root, { id }) => {
-            return await Author.findOne({ _id: id });
+            let author=  await Author.findOne({ _id: id });
+            if(!author)
+                throw  new Exception('Author not found', ExceptionCode.AUTHOR_NOT_FOUND);
+            return author;
+
         },
         authors: async (root, args) => {
             args = new Validate(args)

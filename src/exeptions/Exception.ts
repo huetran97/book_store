@@ -1,7 +1,9 @@
+import ExceptionCode from './ExceptionCode';
+
 class Exception extends Error {
     public code: number;
 
-    constructor (message: string, code = 0) {
+    constructor(message: string, code: ExceptionCode = ExceptionCode.UNKNOW) {
 
         // Calling parent constructor of base Error class.
         super(message);

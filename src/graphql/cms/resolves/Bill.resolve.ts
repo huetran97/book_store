@@ -4,13 +4,15 @@ import * as Joi from 'joi';
 import { User } from '@private/models/index';
 import * as  escapeStringRegexp from 'escape-string-regexp';
 import { changeAlias } from '../../../helpers';
+import Exception from '../../../exeptions/Exception';
+import ExceptionCode from '../../../exeptions/ExceptionCode';
 
 export default {
     Query: {
         bill: async (root, { id }) => {
             let bill_data = await Bill.findOne({ _id: id });
             if (!bill_data)
-                throw new Error('Bill not found');
+                throw new Exception('Bill not found', ExceptionCode.BILL_NOT_FOUND);
 
             return bill_data;
         },

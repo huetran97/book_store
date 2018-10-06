@@ -78,6 +78,8 @@ const query = gql`
             search: String,
             is_active: Boolean
         ): ListIssuingCompany
+        
+        language(id: String!): Language
 
         languages(
             offset: Int,
@@ -92,6 +94,8 @@ const query = gql`
             search: String,
             is_active: Boolean
         ): ListDomainKnowledge
+        
+        domainKnowledge(id: String!): DomainKnowledge
         
         subject(id: String!): Subject
 
@@ -138,15 +142,7 @@ const query = gql`
             limit: Int,
             search: String
         ): Bill
-
-        shipingCost(
-            id: String!
-        ): ShippingCost
-
-        shipingCosts(
-            offset: Int,
-            limit: Int,
-        ): ListShippingCost
+        
         
         cmsGroups: [CmsGroup]
         cmsGroup(

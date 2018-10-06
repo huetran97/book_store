@@ -4,6 +4,8 @@ import Validate from '../../../helpers/validate';
 import * as Joi from 'joi';
 import * as _ from 'lodash';
 import * as  escapeStringRegexp from 'escape-string-regexp';
+import Exception from '../../../exeptions/Exception';
+import ExceptionCode from '../../../exeptions/ExceptionCode';
 
 export default {
     Mutation: {
@@ -36,7 +38,7 @@ export default {
             let issuing_company_updated = await IssuingCompany.findOneAndUpdate({ _id: id }, { $set: update }, { new: true });
 
             if (!issuing_company_updated)
-                throw new Error('Can not updated Store');
+                throw new Exception('Can not updated Issuing company', ExceptionCode.CAN_NOT_UPDATE_ISSUING_COMPANY);
 
             return issuing_company_updated;
         },
@@ -48,7 +50,7 @@ export default {
             }, { $set: { is_active: false } }, { new: true });
 
             if (!issuing_company_removed)
-                throw new Error('Can not remove Issuing Company');
+                throw new Exception('Can not remove Issuing Company', ExceptionCode.CAN_NOT_REMOVE_ISSUING_COMPANY);
 
             return {
                 message: 'Remove Issuing Company successful'
