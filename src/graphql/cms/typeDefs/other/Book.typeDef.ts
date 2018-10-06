@@ -15,6 +15,7 @@ const book = gql`
         domain_knowledge: DomainKnowledge,
         subjects : ListSubject,
         size: String
+        thumbnail: String,
         issuing_company: IssuingCompany
         print_length: Float
         cover_type: String,
