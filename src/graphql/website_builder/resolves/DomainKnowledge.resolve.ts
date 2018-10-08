@@ -28,6 +28,8 @@ export default {
             if (_.isBoolean(args.is_active)) {
                 filter.is_active = args.is_active;
             }
+            if (args.language)
+                filter.language = args.language;
 
             let list = DomainKnowledge
                 .find(filter)
@@ -47,6 +49,8 @@ export default {
             if (_.isBoolean(args.is_active)) {
                 filter.is_active = args.is_active;
             }
+            if (args.language)
+                filter.language = args.language;
 
             return await DomainKnowledge.find(filter).countDocuments();
         }

@@ -42,7 +42,7 @@ const query = gql`
         domainKnowledges(
             offset: Int,
             limit: Int,
-            search: String,
+            language: String,
             is_active: Boolean
         ): ListDomainKnowledge
 
@@ -53,7 +53,7 @@ const query = gql`
         subjects(
             offset: Int,
             limit: Int,
-            search: String,
+            domain_knowledge: String,
             is_active: Boolean
         ): ListSubject
 
