@@ -4,7 +4,8 @@ const domainKnowledge = gql`
     type DomainKnowledge {
         id: String,
         name: String
-        language: Language
+        language: Language,
+        subjects: [Subject]
     },
     type ListDomainKnowledge {
         offset: Int,

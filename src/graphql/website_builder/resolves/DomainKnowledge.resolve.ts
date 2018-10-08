@@ -1,4 +1,4 @@
-import { DomainKnowledge, Language } from '@private/models';
+import { DomainKnowledge, Language, Subject } from '@private/models';
 import Validate from '../../../helpers/validate';
 import * as Joi from 'joi';
 import * as _ from 'lodash';
@@ -58,6 +58,9 @@ export default {
     DomainKnowledge: {
         language: async (domain_knowledge) => {
             return await Language.findOne({ _id: domain_knowledge.language });
+        },
+        subjects: async (domain_knowledge) => {
+            return await Subject.find({ domain_knowledge: domain_knowledge });
         }
     }
 };
