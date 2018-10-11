@@ -102,6 +102,7 @@ let schemaCmsGraphql = makeExecutableSchema({
 const serverCmsGraphql = new ApolloServer({
     schema: schemaCmsGraphql,
     debug: true,
+    introspection: true,
     formatError: error => {
         console.log(error, 'other', 'error');
         return error;
@@ -141,6 +142,7 @@ let schemaWebBuilderGraphql = makeExecutableSchema({
 const serverWebBuilderGraphql = new ApolloServer({
     schema: schemaWebBuilderGraphql,
     debug: true,
+    introspection: true,
     formatError: error => {
         console.log(error, 'other', 'error');
         return error;

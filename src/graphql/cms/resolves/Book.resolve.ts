@@ -1,14 +1,28 @@
-import { Author, Book, DomainKnowledge, IssuingCompany, Language, Publisher, Store, Subject } from '@private/models';
+import {
+    Author,
+    Book,
+    BookStore,
+    DomainKnowledge,
+    IssuingCompany,
+    Language,
+    Publisher,
+    Subject
+} from '@private/models';
 import * as _ from 'lodash';
 import Validate from '../../../helpers/validate';
 import * as Joi from 'joi';
 import * as  escapeStringRegexp from 'escape-string-regexp';
 import { changeAlias } from '../../../helpers';
+import Exception from '../../../exeptions/Exception';
+import ExceptionCode from '../../../exeptions/ExceptionCode';
 
 export default {
     Mutation: {
-        addBook: async (root, { name, description, author, price, publisher, publication_date, language,
-            domain_knowledge, subjects, size, issuing_company, print_length, cover_type, store, amount, thumbnail }) => {
+        addBook: async (root, {
+            name, description, author, price, publisher, publication_date, language,
+            domain_knowledge, subjects, size, issuing_company, print_length, cover_type, thumbnail,
+            book_code
+        }) => {
 
             let language_data         = await Language.findOne({ _id: language });
             let domain_knowledge_data = await DomainKnowledge.findOne({ _id: domain_knowledge });
@@ -16,9 +30,8 @@ export default {
             let author_data          = await Author.findOne({ _id: author });
             let publisher_data       = await Publisher.findOne({ _id: publisher });
             let issuing_company_data = await IssuingCompany.findOne({ _id: issuing_company });
-            let store_data           = await Store.findOne({ _id: store });
 
-            if (!language_data || !domain_knowledge_data || !author_data || !publisher_data || !issuing_company_data || !store_data) throw new Error('Invalid data');
+            if (!language_data || !domain_knowledge_data || !author_data || !publisher_data || !issuing_company_data) throw new Error('Invalid data');
 
             for (let subject_id of subjects) {
                 let subject_data = await Subject.findOne({ _id: subject_id });
@@ -31,9 +44,9 @@ export default {
 
             }
 
-
             let book_data = new Book({
                 name: name,
+                book_code: book_code,
                 description: description,
                 author: author,
                 price: price,
@@ -46,9 +59,7 @@ export default {
                 issuing_company: issuing_company,
                 print_length: print_length,
                 cover_type: cover_type,
-                store: store,
-                thumbnail: thumbnail,
-                amount: amount
+                thumbnail: thumbnail
             });
             return await book_data.save();
         },
@@ -56,7 +67,7 @@ export default {
             id, name, description, author, price, publisher, publication_date,
             language, domain_knowledge, subjects, size, issuing_company,
             thumbnail,
-            print_length, cover_type, store, amount, is_active
+            print_length, cover_type, book_code, is_active
         }) => {
             let update: any = {};
 
@@ -66,9 +77,8 @@ export default {
             let author_data          = await Author.findOne({ _id: author });
             let publisher_data       = await Publisher.findOne({ _id: publisher });
             let issuing_company_data = await IssuingCompany.findOne({ _id: issuing_company });
-            let store_data           = await Store.findOne({ _id: store });
 
-            if (!language_data || !domain_knowledge_data || !author_data || !publisher_data || !issuing_company_data || !store_data) throw new Error('Invalid data');
+            if (!language_data || !domain_knowledge_data || !author_data || !publisher_data || !issuing_company_data) throw new Error('Invalid data');
 
             for (let subject_id of subjects) {
                 let subject_data = await Subject.findOne({ _id: subject_id });
@@ -80,15 +90,22 @@ export default {
                 ) throw new Error('Invalid data1');
 
             }
-
             if (name)
                 update.name = name;
+
+            if (book_code) {
+                let bookData = await Book.findOne({ book_code: book_code });
+                if (bookData)
+                    throw new Exception('Book is exist', ExceptionCode.BOOK_IS_EXIST);
+                update.book_code = book_code;
+
+            }
 
             if (description)
                 update.description = description;
 
-            if(thumbnail)
-                update.thumbnail= thumbnail;
+            if (thumbnail)
+                update.thumbnail = thumbnail;
 
             if (author) {
                 let author_data = await Author.findOne({ _id: author });
@@ -117,7 +134,7 @@ export default {
             if (domain_knowledge)
                 update.domain_knowledge = domain_knowledge;
 
-            if (subjects.length >0)
+            if (subjects.length > 0)
                 update.subject = subjects;
 
             if (size)
@@ -133,14 +150,6 @@ export default {
                 update.print_length = print_length;
             if (cover_type)
                 update.cover_type = cover_type;
-
-            if (store) {
-                let store_data = await Store.findOne({ _id: store });
-                if (!store_data) throw new Error('Store not found');
-            }
-
-            if (amount)
-                update.amount = amount;
 
             if (_.isBoolean(is_active))
                 update.is_active = is_active;
@@ -180,7 +189,6 @@ export default {
 
             let filter: any = {};
 
-
             if (args.search) {
                 filter.$or = [
                     { name_slug: new RegExp(escapeStringRegexp(changeAlias(args.search)), 'gi') }
@@ -190,12 +198,28 @@ export default {
             if (_.isBoolean(args.is_active)) {
                 filter.is_active = args.is_active;
             }
+            if (args.store) {
+                let bookInStoreID = await BookStore.find({ store: args.store }).distinct('book');
+                filter._id        = { $in: bookInStoreID };
+            }
+
+            let sort: any = {
+                is_active: -1
+            };
+            if (_.isBoolean(args.is_hot_sale)) {
+                sort.total_sold = -1;
+            }
+
+            if (_.isBoolean(args.is_newest)) {
+                sort._id = 1;
+            }
+
 
             let list = Book
                 .find(filter)
                 .skip(args.offset)
                 .limit(args.limit)
-                .sort({ is_active: -1 , _id: 1})
+                .sort(sort)
             ;
 
             return {
@@ -227,9 +251,6 @@ export default {
         },
         issuing_company: async (book) => {
             return await IssuingCompany.findOne({ _id: book.issuing_company });
-        },
-        store: async (book) => {
-            return await Store.findOne({ _id: book.store });
         }
     }
 };

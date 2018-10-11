@@ -1,4 +1,4 @@
-import { Staff, Store } from '@private/models';
+import { Staff, Store , BookStore, Book} from '@private/models';
 import { changeAlias } from '../../../helpers';
 import Validate from '../../../helpers/validate';
 import * as Joi from 'joi';
@@ -119,6 +119,13 @@ export default {
         },
         staffs: async (store) => {
             return await Staff.find({ store: store._id, is_active: true });
+        },
+        total_book: async(store) => {
+            return await BookStore.find({store: store._id, is_active: true}).countDocuments();
+        },
+        books: async(store)=> {
+            return await BookStore.find({store: store._id, is_active: true});
+
         }
     }
 };

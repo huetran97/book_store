@@ -4,6 +4,7 @@ import Validate from '../../../helpers/validate';
 import * as Joi from 'joi';
 import * as  escapeStringRegexp from 'escape-string-regexp';
 import { changeAlias } from '../../../helpers';
+import { ObjectID } from 'bson';
 
 export default {
 
@@ -74,6 +75,6 @@ export default {
         },
         store: async (book) => {
             return await Store.findOne({ _id: book.store });
-        }
+        },
     }
 };

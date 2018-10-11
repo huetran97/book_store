@@ -184,6 +184,7 @@ const mutation = gql`
 
         addBook(
             name: String!,
+            book_code: String!
             description: String,
             author: String!,
             price: Float!,
@@ -197,12 +198,11 @@ const mutation = gql`
             issuing_company: String!,
             print_length: Int,
             cover_type: COVER_TYPE,
-            store: String,
-            amount: Float,
         ):Book
 
         updateBook(
             id: String!
+            book_code: String
             name: String,
             description: String,
             author: String,
@@ -218,13 +218,25 @@ const mutation = gql`
             print_length: Int,
             cover_type: COVER_TYPE,
             is_active: Boolean
-            store: String,
-            amount: Float,
         ):Book
 
         removeBook(
             id: String!
         ): StringMessage
+        
+        addBookStore(
+            book: String!,
+            store: String!
+            amount: Float
+        ): BookStore
+        
+        updateBookStore(
+            id: String!,
+            book: String,
+            store: String,
+            is_active: Boolean
+            amount: Float
+        ): BookStore
 
         addEvent(
             title: String!

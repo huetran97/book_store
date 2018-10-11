@@ -65,6 +65,9 @@ const query = gql`
             offset: Int,
             limit: Int,
             search: String,
+            store: String,
+            is_hot_sale: Boolean,
+            is_newest: Boolean,
             is_active: Boolean
         ): ListBook
 

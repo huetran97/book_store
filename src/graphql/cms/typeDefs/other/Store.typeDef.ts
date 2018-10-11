@@ -7,6 +7,8 @@ const store = gql`
         phone_number: String,
         address: String,
         total_staff:Float,
+        total_book: Float,
+        books: [Book],
         staffs: [Staff],
         is_active: Boolean
     },

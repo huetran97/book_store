@@ -13,6 +13,7 @@ import Promotion from './Promotion.resolve';
 import Event from './Event.resolve';
 import CmsGroup from './CmsGroup.resolve';
 import Staff from './Staff.resolve';
+import BookStore from './BookStore.resolve';
 // import StaffCmsGroup from './Staf'
 
 export default [
@@ -30,5 +31,6 @@ export default [
     Promotion,
     Event,
     CmsGroup,
-    Staff
+    Staff,
+    BookStore
 ];

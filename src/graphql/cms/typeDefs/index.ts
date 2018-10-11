@@ -22,6 +22,7 @@ import DomainKnowledge from './other/DomainKnowledge.typeDef';
 import Subject from './other/Subject.typeDef';
 import Cart from './other/Cart.typeDef';
 import Staff from './other/Staff.typeDef';
+import BookStore from './other/BookStore.typeDef';
 
 export default [
     mutation,
@@ -47,5 +48,6 @@ export default [
     DomainKnowledge,
     Subject,
     Cart,
-    Staff
+    Staff,
+    BookStore
 ];

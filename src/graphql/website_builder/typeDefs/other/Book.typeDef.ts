@@ -4,6 +4,7 @@ const book = gql`
     type Book {
         id: String
         name: String
+        book_code: String
         description: String
         author: Author
         rate: Float
@@ -19,8 +20,9 @@ const book = gql`
         print_length: Float
         cover_type: String,
         store: Store
-        amount: Float,
-        is_active: Boolean
+        is_active: Boolean,
+        thumbnail:String,
+        total_sold: Float,
     },
     type ListBook {
         offset: Int,
