@@ -211,7 +211,7 @@ const mutation = gql`
             publication_date: Float,
             language: String,
             domain_knowledge: String,
-            subject: [String],
+            subjects: [String],
             size: String,
             thumbnail: String,
             issuing_company: String,

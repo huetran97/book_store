@@ -1,4 +1,4 @@
-import { Store } from '@private/models';
+import { Staff, Store } from '@private/models';
 import { changeAlias } from '../../../helpers';
 import Validate from '../../../helpers/validate';
 import * as Joi from 'joi';
@@ -60,7 +60,7 @@ export default {
     Query: {
         store: async (root, { id }) => {
             let store = await Store.findOne({ _id: id });
-            if(!store)
+            if (!store)
                 throw new Exception('Store not found', ExceptionCode.STORE_NOT_FOUND);
 
             return store;
@@ -102,7 +102,7 @@ export default {
 
             if (args.search) {
                 filter.$or = [
-                    { name_slug: new RegExp(escapeStringRegexp(changeAlias(args.search)), 'gi') },
+                    { name_slug: new RegExp(escapeStringRegexp(changeAlias(args.search)), 'gi') }
                 ];
             }
 
@@ -111,6 +111,14 @@ export default {
             }
 
             return await Store.find(filter).countDocuments();
+        }
+    },
+    Store: {
+        total_staff: async (store) => {
+            return await Staff.find({ store: store._id, is_active: true }).countDocuments();
+        },
+        staffs: async (store) => {
+            return await Staff.find({ store: store._id, is_active: true });
         }
     }
 };

@@ -6,6 +6,8 @@ const store = gql`
         name: String,
         phone_number: String,
         address: String,
+        total_staff:Float,
+        staffs: [Staff],
         is_active: Boolean
     },
     type ListStore {

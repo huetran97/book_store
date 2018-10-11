@@ -8,7 +8,7 @@ import { changeAlias } from '../../../helpers';
 export default {
     Mutation: {
         addBook: async (root, { name, description, author, price, publisher, publication_date, language,
-            domain_knowledge, subject, size, issuing_company, print_length, cover_type, store, amount, thumbnail }) => {
+            domain_knowledge, subjects, size, issuing_company, print_length, cover_type, store, amount, thumbnail }) => {
 
             let language_data         = await Language.findOne({ _id: language });
             let domain_knowledge_data = await DomainKnowledge.findOne({ _id: domain_knowledge });
@@ -20,7 +20,7 @@ export default {
 
             if (!language_data || !domain_knowledge_data || !author_data || !publisher_data || !issuing_company_data || !store_data) throw new Error('Invalid data');
 
-            for (let subject_id of subject) {
+            for (let subject_id of subjects) {
                 let subject_data = await Subject.findOne({ _id: subject_id });
                 if (!subject_data)
                     throw new Error('Invalid data');
@@ -41,7 +41,7 @@ export default {
                 publication_date: publication_date,
                 language: language,
                 domain_knowledge: domain_knowledge,
-                subject: subject,
+                subject: subjects,
                 size: size,
                 issuing_company: issuing_company,
                 print_length: print_length,
@@ -54,7 +54,7 @@ export default {
         },
         updateBook: async (root, {
             id, name, description, author, price, publisher, publication_date,
-            language, domain_knowledge, subject, size, issuing_company,
+            language, domain_knowledge, subjects, size, issuing_company,
             thumbnail,
             print_length, cover_type, store, amount, is_active
         }) => {
@@ -70,7 +70,7 @@ export default {
 
             if (!language_data || !domain_knowledge_data || !author_data || !publisher_data || !issuing_company_data || !store_data) throw new Error('Invalid data');
 
-            for (let subject_id of subject) {
+            for (let subject_id of subjects) {
                 let subject_data = await Subject.findOne({ _id: subject_id });
                 if (!subject_data)
                     throw new Error('Invalid data');
@@ -117,8 +117,8 @@ export default {
             if (domain_knowledge)
                 update.domain_knowledge = domain_knowledge;
 
-            if (subject)
-                update.subject = subject;
+            if (subjects.length >0)
+                update.subject = subjects;
 
             if (size)
                 update.size = size;
@@ -195,7 +195,7 @@ export default {
                 .find(filter)
                 .skip(args.offset)
                 .limit(args.limit)
-                .sort({ is_active: -1 })
+                .sort({ is_active: -1 , _id: 1})
             ;
 
             return {
