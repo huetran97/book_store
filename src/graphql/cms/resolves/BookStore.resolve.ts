@@ -40,6 +40,9 @@ export default {
                 store: store,
                 amount: amount
             });
+
+            await Book.findOneAndUpdate({ _id: book }, { $set: { is_active: true } }, { new: true });
+
             return await newBookStore.save();
         },
 
@@ -58,6 +61,8 @@ export default {
 
                 bookStoreUpdated.book  = book;
                 bookStoreUpdated.store = store;
+                await Book.findOneAndUpdate({ _id: book }, { $set: { is_active: true } }, { new: true });
+
             }
 
             if (book && !store) {
@@ -67,6 +72,7 @@ export default {
                 if (bookStoreData)
                     throw new Exception('Book is exist in Store', ExceptionCode.BOOK_IS_EXIST_IN_THIS_STORE);
                 bookStoreUpdated.book = book;
+                await Book.findOneAndUpdate({ _id: book }, { $set: { is_active: true } }, { new: true });
 
             }
             if (!book && store) {
