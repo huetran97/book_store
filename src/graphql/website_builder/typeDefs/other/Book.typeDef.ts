@@ -8,7 +8,6 @@ const book = gql`
         description: String
         author: Author
         rate: Float
-        quantity_sold: Float
         price: Float
         publisher: Publisher
         publication_date: Float
@@ -23,6 +22,7 @@ const book = gql`
         is_active: Boolean,
         thumbnail:String,
         total_sold: Float,
+        book_store: [BookStore]
     },
     type ListBook {
         offset: Int,

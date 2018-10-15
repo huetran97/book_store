@@ -20,6 +20,7 @@ import DomainKnowledge from './other/DomainKnowledge.typeDef';
 import Subject from './other/Subject.typeDef';
 import Cart from './other/Cart.typeDef';
 import UserLogin from './other/UserLogin.typeDef';
+import BookStore from './other/BookStore.typeDef';
 
 export default [
     mutation,
@@ -43,5 +44,6 @@ export default [
     Language,
     DomainKnowledge,
     Subject,
-    UserLogin
+    UserLogin,
+    BookStore
 ];

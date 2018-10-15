@@ -38,6 +38,7 @@ const mutation = gql`
             end_work_date: Float,
             name: String!,
             phone_number: String!,
+            role: String!,
             store: String!
             address: String,
         ): Staff
@@ -58,6 +59,7 @@ const mutation = gql`
             name: String,
             phone_number: String,
             store: String,
+            role: String,
             address: String,
             is_active: Boolean
         ):Staff

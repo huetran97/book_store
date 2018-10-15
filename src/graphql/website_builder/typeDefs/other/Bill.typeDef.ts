@@ -4,7 +4,7 @@ const bill = gql`
     type Bill{
         id: String
         user: User
-        cart: Cart
+        cart: CartOutPut
         status: String
         number: Float
         shipping: ShippingCost

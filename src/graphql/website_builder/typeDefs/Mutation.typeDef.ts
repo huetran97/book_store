@@ -26,23 +26,10 @@ const mutation = gql`
             current_password: String!,
             new_password: String!
         ): User
-
-        addCart(
-            book: String!
-            number: Int
-        ): Cart
-
-        updateCart(
-            id: String!,
-            number: String
-        ): Cart
-
-        removeCart(
-            id: String!
-        ): StringMessage
-
+        
         addBill(
-            cart: [String!],
+            carts: [Cart!],
+            shipping: String!,
             shipping_address: String!
         ): Bill
 

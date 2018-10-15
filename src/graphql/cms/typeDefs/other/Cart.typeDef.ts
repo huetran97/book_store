@@ -5,9 +5,11 @@ const cart = gql`
         id: String
         user: User
         book: Book
+        promotion: Promotion
         number: Int
-        amount: Float
+        price: Float
         created_at: Float,
+        updated_at: Float
     },
     type ListCard {
         offset: Int,

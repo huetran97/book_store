@@ -4,17 +4,23 @@ import Validate from '../../../helpers/validate';
 import * as Joi from 'joi';
 import * as  escapeStringRegexp from 'escape-string-regexp';
 import { changeAlias } from '../../../helpers';
+import { BookStore } from '@private/models/index';
+import Exception from '../../../exeptions/Exception';
+import ExceptionCode from '../../../exeptions/ExceptionCode';
 import { ObjectID } from 'bson';
 
 export default {
 
     Query: {
-        book: async (root, { id }) => {
-            let book_data = await Book.findOne({ _id: id });
-            if (!book_data)
-                throw new Error('Book not found');
+        book: async (root, { book }) => {
+            let bookStoreData = await BookStore.findOne({ book: book });
+            if (!bookStoreData) throw new Exception('Book not found', ExceptionCode.BOOK_NOT_FOUND);
 
-            return book_data;
+            let bookData = await Book.findOne({ _id: book });
+            if (!bookData)
+                throw new Exception('Book not found', ExceptionCode.BOOK_NOT_FOUND);
+
+            return bookData;
         },
         books: async (root, args) => {
             args = new Validate(args)
@@ -23,8 +29,9 @@ export default {
                     limit: Joi.number().integer().optional().min(5).default(20)
                 }).validate();
 
-            let filter: any = {};
-
+            let filter: any = {
+                is_active: true
+            };
 
             if (args.search) {
                 filter.$or = [
@@ -32,15 +39,28 @@ export default {
                 ];
             }
 
-            if (_.isBoolean(args.is_active)) {
-                filter.is_active = args.is_active;
+
+            if (args.store) {
+                let bookInStoreID = await BookStore.find({ store: args.store }).distinct('book');
+                filter._id        = { $in: bookInStoreID };
+            }
+
+            let sort: any = {
+                is_active: -1
+            };
+            if (_.isBoolean(args.is_hot_sale)) {
+                sort.total_sold = -1;
+            }
+
+            if (_.isBoolean(args.is_newest)) {
+                sort._id = 1;
             }
 
             let list = Book
                 .find(filter)
                 .skip(args.offset)
                 .limit(args.limit)
-                .sort({ is_active: -1 })
+                .sort(sort)
             ;
 
             return {
@@ -65,7 +85,8 @@ export default {
             };
         },
         author: async (book) => {
-            return await Author.findOne({ _id: book.auth });
+            console.log('bôk', book.author);
+            return await Author.findOne({ _id: book.author });
         },
         publisher: async (book) => {
             return await Publisher.findOne({ _id: book.publisher });
@@ -73,8 +94,14 @@ export default {
         issuing_company: async (book) => {
             return await IssuingCompany.findOne({ _id: book.issuing_company });
         },
+
+        book_store: async (book) => {
+            return await BookStore.find({ book: book._id });
+        }
+    },
+    BookStore: {
         store: async (book) => {
-            return await Store.findOne({ _id: book.store });
-        },
+            return await Store.findOne({ _id: new ObjectID(book.store) });
+        }
     }
 };

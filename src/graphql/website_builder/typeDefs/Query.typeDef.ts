@@ -7,8 +7,8 @@ const query = gql`
         user: User
         @requireLogged
 
-        book(id: String!): Book,
-        books(offset: Int =0, limit: Int): ListBook
+        book(book: String!): Book,
+        books(offset: Int =0, limit: Int, store:String, search: String, is_hot_sale:Boolean, is_newest: Boolean): ListBook
 
         shipingCost(
             id: String!
@@ -109,17 +109,17 @@ const query = gql`
         ): ListStore
 
         shippingCost(
-            id: String!
+            shipping_adress: String!,
+            store: String!,
         ): ShippingCost
+        
+        
 
         shippingCosts(
             offset: Int,
             limit: Int,
         ): ListShippingCost
-
-
-        carts: ListCard
-        @requireLogged
+        
 
         bill(id: String!): Bill
         @requireLogged

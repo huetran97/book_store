@@ -12,7 +12,8 @@ export default {
     Mutation: {
         addStaff: async (root, {
             user_name, email, date_of_birth, sex, id_card_number, id_card_number_date, id_card_number_location,
-            tax_number, insurrance_number, start_work_date, end_work_date, name, phone_number, store, address
+            tax_number, insurrance_number, start_work_date, end_work_date, name, phone_number, store, address,
+            role
         }) => {
             let salt     = randomString(20);
             let password = createHash('sha1', DEFAULT_PASSWORD + salt);
@@ -30,6 +31,7 @@ export default {
                 start_work_date: start_work_date,
                 end_work_date: end_work_date,
                 name: name,
+                role: role,
                 phone_number: phone_number,
                 store: store,
                 address: address
@@ -40,6 +42,7 @@ export default {
 
         updateStaff: async (root, {
             id, email, date_of_birth, sex, id_card_number, id_card_number_date, id_card_number_location,
+            role,
             tax_number, insurrance_number, start_work_date, end_work_date, name, phone_number, store, address, is_active
         }) => {
 
@@ -59,6 +62,9 @@ export default {
 
             if (date_of_birth)
                 staff_data.date_of_birth = date_of_birth;
+
+            if (role)
+                staff_data.role = role;
 
             if (sex)
                 staff_data.sex = sex;

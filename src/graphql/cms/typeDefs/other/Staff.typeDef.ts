@@ -18,6 +18,8 @@ const staff = gql`
         phone_number: String,
         store: Store
         is_active: Boolean,
+        staff: String,
+        role:String,
         address: String,
         last_login: Float,
     },

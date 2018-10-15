@@ -15,6 +15,7 @@ import * as  escapeStringRegexp from 'escape-string-regexp';
 import { changeAlias } from '../../../helpers';
 import Exception from '../../../exeptions/Exception';
 import ExceptionCode from '../../../exeptions/ExceptionCode';
+import { ObjectID } from 'bson';
 
 export default {
     Mutation: {
@@ -43,6 +44,7 @@ export default {
                 ) throw new Error('Invalid data1');
 
             }
+            console.log('author', author);
 
             let book_data = new Book({
                 name: name,
@@ -244,7 +246,7 @@ export default {
             };
         },
         author: async (book) => {
-            return await Author.findOne({ _id: book.auth });
+            return await Author.findOne({ _id:new ObjectID(book.author) });
         },
         publisher: async (book) => {
             return await Publisher.findOne({ _id: book.publisher });

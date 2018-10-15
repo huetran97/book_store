@@ -20,7 +20,6 @@ const book = gql`
         issuing_company: IssuingCompany
         print_length: Float
         cover_type: String,
-        store: Store
         amount: Float,
         is_active: Boolean,
         total_sold: Float,

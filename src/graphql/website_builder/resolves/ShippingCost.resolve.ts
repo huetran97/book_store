@@ -7,12 +7,12 @@ import ExceptionCode from '../../../exeptions/ExceptionCode';
 
 export default {
     Query: {
-        shippingCost: async (root, { id }) => {
-            let shipping_cost = await ShippingCost.findOne({ _id: id });
-            if (!shipping_cost)
-                throw new Exception('Shipping cost not found', ExceptionCode.SHIPPING_COST_NOT_FOUND);
-
-            return shipping_cost;
+        shippingCost: async (root, { shipping_adress , store}) => {
+            // let shipping_cost = await ShippingCost.findOne({ _id: id });
+            // if (!shipping_cost)
+            //     throw new Exception('Shipping cost not found', ExceptionCode.SHIPPING_COST_NOT_FOUND);
+            //
+            // return shipping_cost;
         },
         shippingCosts: async (root, args) => {
             args = new Validate(args)

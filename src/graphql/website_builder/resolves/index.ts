@@ -11,6 +11,7 @@ import Publisher from './Publisher.resolve';
 import ShippingCost from './ShippingCost.resolve';
 import Store from './Store.resolve';
 import Subject from './Subject.resolve';
+import Bill from './Bill.resolve';
 //
 export default [
     User,
@@ -25,5 +26,6 @@ export default [
     Publisher,
     ShippingCost,
     Store,
-    Subject
+    Subject,
+    Bill
 ];
