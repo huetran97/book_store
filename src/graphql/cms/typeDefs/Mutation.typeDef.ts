@@ -71,7 +71,7 @@ const mutation = gql`
         addStore(
             name: String!
             phone_number: String!
-            address: String
+            address: String!
         ): Store
 
         updateStore(

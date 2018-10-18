@@ -43,6 +43,8 @@ const mutation = gql`
             rate:String!,
             comment: String
         ):UserReportBook
+        
+        
     }
 
 `;

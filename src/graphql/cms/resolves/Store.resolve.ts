@@ -1,4 +1,4 @@
-import { Staff, Store , BookStore, Book} from '@private/models';
+import { BookStore, Staff, Store } from '@private/models';
 import { changeAlias } from '../../../helpers';
 import Validate from '../../../helpers/validate';
 import * as Joi from 'joi';
@@ -6,10 +6,12 @@ import * as _ from 'lodash';
 import * as  escapeStringRegexp from 'escape-string-regexp';
 import Exception from '../../../exeptions/Exception';
 import ExceptionCode from '../../../exeptions/ExceptionCode';
+import service from '@private/services';
 
 export default {
     Mutation: {
         addStore: async (root, { name, phone_number, address }) => {
+
             let store = new Store({
                 name: name,
                 name_slug: changeAlias(name),
@@ -29,8 +31,15 @@ export default {
             if (phone_number)
                 update.phone_number = phone_number;
 
-            if (address)
+            if (address) {
                 update.address = address;
+
+                let geocoding_data = await service.geocodingApi.getGeocodingData(address);
+                if (geocoding_data.status === 'OK') {
+                    update.latitude  = geocoding_data.results[0].geometry.location.lat;
+                    update.longitude = geocoding_data.results[0].geometry.location.lng;
+                }
+            }
 
             if (_.isBoolean(is_active))
                 update.is_active = is_active;
@@ -59,10 +68,10 @@ export default {
     },
     Query: {
         store: async (root, { id }) => {
+
             let store = await Store.findOne({ _id: id });
             if (!store)
                 throw new Exception('Store not found', ExceptionCode.STORE_NOT_FOUND);
-
             return store;
         },
         stores: async (root, args) => {
@@ -120,11 +129,11 @@ export default {
         staffs: async (store) => {
             return await Staff.find({ store: store._id, is_active: true });
         },
-        total_book: async(store) => {
-            return await BookStore.find({store: store._id, is_active: true}).countDocuments();
+        total_book: async (store) => {
+            return await BookStore.find({ store: store._id, is_active: true }).countDocuments();
         },
-        books: async(store)=> {
-            return await BookStore.find({store: store._id, is_active: true});
+        books: async (store) => {
+            return await BookStore.find({ store: store._id, is_active: true });
 
         }
     }

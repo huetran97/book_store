@@ -138,7 +138,9 @@ const query = gql`
         @requireLogged
         reportBooks(book: String!): ListUserReportBook
         @requireLogged
-
+        
+        distance(store: String!, address:String!): ShippingCost
+        @requireLogged
     }
 `;
 export default query;

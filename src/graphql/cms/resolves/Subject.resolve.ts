@@ -70,6 +70,10 @@ export default {
                 filter.is_active = args.is_active;
             }
 
+            if (args.domain_knowledge) {
+                filter.domain_knowledge = args.domain_knowledge;
+            }
+
             let list = Subject
                 .find(filter)
                 .skip(args.offset)
@@ -84,10 +88,17 @@ export default {
     ListSubject: {
         total_subject: async ({ args }) => {
             let filter: any = {};
-            if (args)
+            if (args) {
+
+                if (args.domain_knowledge) {
+                    filter.domain_knowledge = args.domain_knowledge;
+                }
+
                 if (_.isBoolean(args.is_active)) {
                     filter.is_active = args.is_active;
                 }
+            }
+
 
             return await Subject.find(filter).countDocuments();
         }

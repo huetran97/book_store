@@ -5,6 +5,7 @@ const bill = gql`
         id: String
         user: User
         cart: CartOutPut
+        distance: Float
         status: String
         number: Float
         shipping: ShippingCost
