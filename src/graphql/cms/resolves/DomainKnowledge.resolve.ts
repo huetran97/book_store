@@ -4,10 +4,18 @@ import * as Joi from 'joi';
 import * as _ from 'lodash';
 import Exception from '../../../exeptions/Exception';
 import ExceptionCode from '../../../exeptions/ExceptionCode';
+import { Subject } from '@private/models/index';
 
 export default {
     Mutation: {
         addDomainKnowledge: async (root, { name, language }) => {
+            let domain_data_exist = await Subject.findOne({
+                name: name, language: language
+            });
+
+            if (domain_data_exist)
+                throw new Exception('Domain is exist in language', ExceptionCode.DOMAIN_IS_EXIST_IN_LANGUAGE);
+
 
             let domain_knowledge = new DomainKnowledge({
                 name: name,
@@ -16,28 +24,42 @@ export default {
             return await domain_knowledge.save();
         },
         updateDomainKnowledge: async (root, { id, name, is_active, language }) => {
-            let update: any = {};
+            let domain_data = await DomainKnowledge.findOne({ _id: id });
+            if (!domain_data)
+                throw new Exception('Domain knowledge not found', ExceptionCode.DOMAIN_KNOWLEDGE_NOT_FOUND);
 
-            if (name) update.name = name;
+            if (name) {
+                let domain_knowledge_exist = await DomainKnowledge.findOne({
+                    name: name, language: domain_data.language
+                });
+
+                if (domain_knowledge_exist)
+                    throw new Exception('Domain knowledge is exist in language', ExceptionCode.DOMAIN_IS_EXIST_IN_LANGUAGE);
+
+                domain_data.name = name;
+            }
 
 
             if (language) {
+
                 let language_data = await Language.findOne({ _id: language });
                 if (!language_data)
                     throw new Error('Language not found');
 
-                update.language = language;
+                let domain_knowledge_exist = await DomainKnowledge.findOne({
+                    name: domain_data.name, language: language
+                });
+
+                if (domain_knowledge_exist)
+                    throw new Exception('Domain knowledge is exist in language', ExceptionCode.DOMAIN_IS_EXIST_IN_LANGUAGE);
+
+                domain_data.language = language;
             }
 
             if (_.isBoolean(is_active))
-                update.is_active = is_active;
+                domain_data.is_active = is_active;
 
-            let domain_knowLedge_updated = await DomainKnowledge.findOneAndUpdate({ _id: id }, { $set: update }, { new: true });
-
-            if (!domain_knowLedge_updated)
-                throw new Error('Can not updated Domain Knowledge');
-
-            return domain_knowLedge_updated;
+            return await domain_data.save();
         },
 
         removeDomainKnowledge: async (root, { id }) => {
@@ -55,9 +77,9 @@ export default {
         }
     },
     Query: {
-        domainKnowledge:async(root, {id})=>{
-            let domain_knowledge_data = await DomainKnowledge.findOne({_id: id});
-            if(!domain_knowledge_data)
+        domainKnowledge: async (root, { id }) => {
+            let domain_knowledge_data = await DomainKnowledge.findOne({ _id: id });
+            if (!domain_knowledge_data)
                 throw new Exception('Domain knowledge not found', ExceptionCode.DOMAIN_KNOWLEDGE_NOT_FOUND);
 
             return domain_knowledge_data;
@@ -70,7 +92,9 @@ export default {
                 }).validate();
 
             let filter: any = {};
-
+            if (args.language) {
+                filter.language = args.language;
+            }
 
             if (_.isBoolean(args.is_active)) {
                 filter.is_active = args.is_active;
@@ -91,8 +115,13 @@ export default {
         total_domain_knowledge: async ({ args }) => {
             let filter: any = {};
 
-            if (_.isBoolean(args.is_active)) {
-                filter.is_active = args.is_active;
+            if (args) {
+                if (args.language)
+                    filter.language = args.language;
+
+                if (_.isBoolean(args.is_active))
+                    filter.is_active = args.is_active;
+
             }
 
             return await DomainKnowledge.find(filter).countDocuments();

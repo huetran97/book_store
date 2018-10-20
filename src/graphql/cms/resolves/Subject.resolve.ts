@@ -8,6 +8,13 @@ import ExceptionCode from '../../../exeptions/ExceptionCode';
 export default {
     Mutation: {
         addSubject: async (root, { name, domain_knowledge }) => {
+            let subject_data_exist = await Subject.findOne({
+                name: name, domain_knowledge: domain_knowledge
+            });
+
+            if (subject_data_exist)
+                throw new Exception('Subject is exist in domain knowledge', ExceptionCode.SUBJECT_IS_EXIST_IN_DOMAIN);
+
             let subject_data = new Subject({
                 name: name,
                 domain_knowledge: domain_knowledge
@@ -16,27 +23,42 @@ export default {
         },
 
         updateSubject: async (root, { id, name, is_active, domain_knowledge }) => {
-            let update: any = {};
 
-            if (name) update.name = name;
+            let subject_data = await Subject.findOne({_id: id});
+            if(!subject_data)
+                throw new Exception('Subject not found', ExceptionCode.STORE_NOT_FOUND);
+
+            if (name) {
+                let subject_data_exist = await Subject.findOne({
+                    name: name, domain_knowledge: subject_data.domain_knowledge
+                });
+
+                if (subject_data_exist)
+                    throw new Exception('Subject is exist in domain knowledge', ExceptionCode.SUBJECT_IS_EXIST_IN_DOMAIN);
+
+                subject_data.name = name;
+            }
 
             if (domain_knowledge) {
                 let domain_knowledge_data = await DomainKnowledge.findOne({ _id: domain_knowledge });
 
                 if (!domain_knowledge_data) throw new Exception('Domain Knowledge not found', ExceptionCode.DOMAIN_KNOWLEDGE_NOT_FOUND);
 
-                update.domain_knowledge = domain_knowledge;
+                let subject_data_exist = await Subject.findOne({
+                    name: subject_data.name, domain_knowledge: domain_knowledge
+                });
+
+                if (subject_data_exist)
+                    throw new Exception('Subject is exist in domain knowledge', ExceptionCode.SUBJECT_IS_EXIST_IN_DOMAIN);
+
+                subject_data.domain_knowledge = domain_knowledge;
             }
 
             if (_.isBoolean(is_active))
-                update.is_active = is_active;
+                subject_data.is_active = is_active;
 
-            let subject_updated = await Subject.findOneAndUpdate({ _id: id }, { $set: update }, { new: true });
 
-            if (!subject_updated)
-                throw new Exception('Can not updated Subject', ExceptionCode.CAN_NOT_UPDATE_SUBJECT);
-
-            return subject_updated;
+            return await subject_data.save();
         },
 
         removeSubject: async (root, { id }) => {

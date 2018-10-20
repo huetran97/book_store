@@ -4,6 +4,7 @@ const language = gql`
     type Language {
         id: String,
         name: String
+        is_active: Boolean
     },
     type ListLanguage {
         offset: Int,

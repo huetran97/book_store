@@ -24,7 +24,7 @@ export default {
                     limit: Joi.number().integer().optional().min(5).default(20)
                 }).validate();
 
-            let filter: any = {};
+            let filter: any = {is_active:true};
 
 
             if (args.search) {
@@ -33,9 +33,6 @@ export default {
                 ];
             }
 
-            if (_.isBoolean(args.is_active)) {
-                filter.is_active = args.is_active;
-            }
 
             let list = Author
                 .find(filter)
@@ -50,18 +47,13 @@ export default {
     },
     ListAuthor: {
         total_author: async ({ args }) => {
-            let filter: any = {};
+            let filter: any = {is_active:true};
 
             if (args.search) {
                 filter.$or = [
                     { name_slug: new RegExp(escapeStringRegexp(changeAlias(args.search)), 'gi') }
                 ];
             }
-
-            if (_.isBoolean(args.is_active)) {
-                filter.is_active = args.is_active;
-            }
-
 
             return await Author.find(filter).countDocuments();
         }

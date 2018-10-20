@@ -1,4 +1,4 @@
-import { Bill, BookStore, Cart, Promotion, ShippingCost, User } from '@private/models';
+import { Bill, BookStore, Cart, Promotion, ShippingCost, User , Book} from '@private/models';
 import Exception from '../../../exeptions/Exception';
 import ExceptionCode from '../../../exeptions/ExceptionCode';
 import * as Joi from 'joi';
@@ -67,9 +67,14 @@ export default {
                 }
 
 
-                let book_store_data: any = await BookStore.findOne({ _id: cart.book_store }).populate('book');
+                let book_store_data: any = await BookStore.findOne({ _id: cart.book_store,
+                    quantity_sold: {$lte: '$amount'}}).populate('book');
+
+
                 if (!book_store_data)
                     throw new Exception('Book store not found', ExceptionCode.BOOK_STORE_NOT_FOUND);
+
+                let bookData = await Book.findOne({_id: book_store_data.book});
 
                 let newCart = new Cart({
                     user: user._id,
@@ -79,6 +84,8 @@ export default {
                     price: book_store_data.book.price
                 });
                 await newCart.save();
+
+                book_store_data.quantity_sold +=1;
 
 
                 sum += (book_store_data.book.price * cart.number) - (cart.number * discount * book_store_data.book.price);

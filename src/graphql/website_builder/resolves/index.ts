@@ -12,6 +12,7 @@ import ShippingCost from './ShippingCost.resolve';
 import Store from './Store.resolve';
 import Subject from './Subject.resolve';
 import Bill from './Bill.resolve';
+import Distance from './Distance.resolve';
 //
 export default [
     User,
@@ -27,5 +28,6 @@ export default [
     ShippingCost,
     Store,
     Subject,
-    Bill
+    Bill,
+    Distance
 ];

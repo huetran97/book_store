@@ -27,7 +27,6 @@ const query = gql`
             offset: Int,
             limit: Int,
             search: String,
-            is_active: Boolean
         ): ListIssuingCompany
 
         language(id: String!): Language
@@ -36,14 +35,12 @@ const query = gql`
             offset: Int,
             limit: Int,
             search: String,
-            is_active: Boolean
         ): ListLanguage
 
         domainKnowledges(
             offset: Int,
             limit: Int,
             language: String,
-            is_active: Boolean
         ): ListDomainKnowledge
 
         domainKnowledge(id: String!): DomainKnowledge
@@ -54,7 +51,6 @@ const query = gql`
             offset: Int,
             limit: Int,
             domain_knowledge: String,
-            is_active: Boolean
         ): ListSubject
 
         event(
@@ -83,7 +79,6 @@ const query = gql`
             offset: Int,
             limit: Int,
             search: String,
-            is_active: Boolean
         ): ListAuthor
 
         publisher(
@@ -94,7 +89,6 @@ const query = gql`
             offset: Int,
             limit: Int,
             search: String,
-            is_active: Boolean
         ): ListPublisher
 
         store(
@@ -105,15 +99,7 @@ const query = gql`
             offset: Int,
             limit: Int,
             search: String,
-            is_active: Boolean
         ): ListStore
-
-        shippingCost(
-            shipping_adress: String!,
-            store: String!,
-        ): ShippingCost
-        
-        
 
         shippingCosts(
             offset: Int,
@@ -139,7 +125,7 @@ const query = gql`
         reportBooks(book: String!): ListUserReportBook
         @requireLogged
         
-        distance(store: String!, address:String!): ShippingCost
+        distance(store: String!, address:String!): ReportShippingCost
         @requireLogged
     }
 `;

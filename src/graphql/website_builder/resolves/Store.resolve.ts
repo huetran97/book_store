@@ -2,7 +2,6 @@ import { Store } from '@private/models';
 import { changeAlias } from '../../../helpers';
 import Validate from '../../../helpers/validate';
 import * as Joi from 'joi';
-import * as _ from 'lodash';
 import * as  escapeStringRegexp from 'escape-string-regexp';
 import Exception from '../../../exeptions/Exception';
 import ExceptionCode from '../../../exeptions/ExceptionCode';
@@ -24,17 +23,13 @@ export default {
                     limit: Joi.number().integer().optional().min(5).default(20)
                 }).validate();
 
-            let filter: any = {};
+            let filter: any = { is_active: true };
 
 
             if (args.search) {
                 filter.$or = [
                     { name_slug: new RegExp(escapeStringRegexp(changeAlias(args.search)), 'gi') }
                 ];
-            }
-
-            if (_.isBoolean(args.is_active)) {
-                filter.is_active = args.is_active;
             }
 
             let list = Store
@@ -50,16 +45,12 @@ export default {
     },
     ListStore: {
         total_store: async ({ args }) => {
-            let filter: any = {};
+            let filter: any = { is_active: true };
 
             if (args.search) {
                 filter.$or = [
                     { name_slug: new RegExp(escapeStringRegexp(changeAlias(args.search)), 'gi') }
                 ];
-            }
-
-            if (_.isBoolean(args.is_active)) {
-                filter.is_active = args.is_active;
             }
 
             return await Store.find(filter).countDocuments();

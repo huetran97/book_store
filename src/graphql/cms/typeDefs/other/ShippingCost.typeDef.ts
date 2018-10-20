@@ -3,7 +3,8 @@ import gql from 'graphql-tag';
 const shippingCost = gql`
     type ShippingCost {
         id: String
-        type: String
+        fromKM: Float
+        toKM: Float
         cost: Float
     },
     type ListShippingCost {

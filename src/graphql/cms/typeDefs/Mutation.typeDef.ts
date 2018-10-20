@@ -199,6 +199,7 @@ const mutation = gql`
             thumbnail: String,
             issuing_company: String!,
             print_length: Int,
+            amount: Float!,
             cover_type: COVER_TYPE,
         ):Book
 
@@ -217,6 +218,7 @@ const mutation = gql`
             size: String,
             thumbnail: String,
             issuing_company: String,
+            amount: Float,
             print_length: Int,
             cover_type: COVER_TYPE,
             is_active: Boolean
@@ -229,7 +231,7 @@ const mutation = gql`
         addBookStore(
             book: String!,
             store: String!
-            amount: Float
+            amount: Float!
         ): BookStore
         
         updateBookStore(

@@ -6,6 +6,7 @@ const domainKnowledge = gql`
         name: String
         language: Language,
         subjects: [Subject]
+        is_active: Boolean
     },
     type ListDomainKnowledge {
         offset: Int,

@@ -94,7 +94,7 @@ const query = gql`
         domainKnowledges(
             offset: Int,
             limit: Int,
-            search: String,
+            language: String,
             is_active: Boolean
         ): ListDomainKnowledge
         

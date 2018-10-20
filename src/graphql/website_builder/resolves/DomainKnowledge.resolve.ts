@@ -9,6 +9,7 @@ export default {
 
     Query: {
         domainKnowledge: async (root, { id }) => {
+            console.log('vao roi');
             let domain_knowledge_data = await DomainKnowledge.findOne({ _id: id });
             if (!domain_knowledge_data)
                 throw new Exception('Domain knowledge not found', ExceptionCode.DOMAIN_KNOWLEDGE_NOT_FOUND);
@@ -22,12 +23,8 @@ export default {
                     limit: Joi.number().integer().optional().min(5).default(20)
                 }).validate();
 
-            let filter: any = {};
+            let filter: any = {is_active: true};
 
-
-            if (_.isBoolean(args.is_active)) {
-                filter.is_active = args.is_active;
-            }
             if (args.language)
                 filter.language = args.language;
 
@@ -44,11 +41,9 @@ export default {
     },
     ListDomainKnowledge: {
         total_domain_knowledge: async ({ args }) => {
+            console.log('args', args);
             let filter: any = {};
 
-            if (_.isBoolean(args.is_active)) {
-                filter.is_active = args.is_active;
-            }
             if (args.language)
                 filter.language = args.language;
 
@@ -59,8 +54,11 @@ export default {
         language: async (domain_knowledge) => {
             return await Language.findOne({ _id: domain_knowledge.language });
         },
-        subjects: async (domain_knowledge) => {
-            return await Subject.find({ domain_knowledge: domain_knowledge });
+        subjects: async (list_domain_knowledge, args) => {
+
+            let filter: any = { domain_knowledge: list_domain_knowledge, is_active:true };
+
+            return await Subject.find(filter);
         }
     }
 };

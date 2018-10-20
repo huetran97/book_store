@@ -4,6 +4,7 @@ const subject = gql`
     type Subject {
         id: String,
         name: String
+        is_active: Boolean
         domain_knowledge: DomainKnowledge
     },
     type ListSubject {

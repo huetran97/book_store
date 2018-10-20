@@ -3,8 +3,14 @@ import gql from 'graphql-tag';
 const shippingCost = gql`
     type ShippingCost {
         id: String
-        type: String
+        fromKM: Float
+        toKM: Float
         cost: Float
+    },
+    
+    type ReportShippingCost{
+        shipping_cost: ShippingCost,
+        distance: Float
     },
     type ListShippingCost {
         offset: Int,

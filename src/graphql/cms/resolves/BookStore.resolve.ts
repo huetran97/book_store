@@ -35,6 +35,39 @@ export default {
             if (bookStoreData)
                 throw new Exception('Book is exist in Store', ExceptionCode.BOOK_IS_EXIST_IN_THIS_STORE);
 
+            let amountData: any = await BookStore.aggregate(
+                [
+                    {
+                        $group:
+                            {
+                                _id: { book: book },
+                                amount: { $sum: '$amount' },
+                                book: { $first: '$book' }
+
+                            }
+                    },
+                    {
+                        $lookup: {
+                            from: 'book',
+                            localField: 'book',
+                            foreignField: '_id',
+                            as: 'bookDetail'
+                        }
+                    }
+
+                ]
+            );
+            if (amountData.length >0) {
+
+                let exist = amountData[0].bookDetail[0].amount - amountData[0].amount;
+
+
+                if (amount > exist) {
+                    throw new Exception(`In stock only ${exist} books`, ExceptionCode.IN_STOCK_ONLY_NUMBER_BOOKS);
+                }
+            }
+
+
             let newBookStore = new BookStore({
                 book: book,
                 store: store,

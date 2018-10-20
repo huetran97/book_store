@@ -18,7 +18,7 @@ export default {
             });
             return await author.save();
         },
-        updateAuthor: async (root, { id, name, description , is_active}) => {
+        updateAuthor: async (root, { id, name, description, is_active }) => {
             let update: any = {};
 
             if (name) {
@@ -56,8 +56,8 @@ export default {
     },
     Query: {
         author: async (root, { id }) => {
-            let author=  await Author.findOne({ _id: id });
-            if(!author)
+            let author = await Author.findOne({ _id: id });
+            if (!author)
                 throw  new Exception('Author not found', ExceptionCode.AUTHOR_NOT_FOUND);
             return author;
 
@@ -70,12 +70,9 @@ export default {
                 }).validate();
 
             let filter: any = {};
-
-            
-
             if (args.search) {
                 filter.$or = [
-                    { name_slug: new RegExp(escapeStringRegexp(changeAlias(args.search)), 'gi') },
+                    { name_slug: new RegExp(escapeStringRegexp(changeAlias(args.search)), 'gi') }
                 ];
             }
 
@@ -100,7 +97,7 @@ export default {
 
             if (args.search) {
                 filter.$or = [
-                    { name_slug: new RegExp(escapeStringRegexp(changeAlias(args.search)), 'gi') },
+                    { name_slug: new RegExp(escapeStringRegexp(changeAlias(args.search)), 'gi') }
                 ];
             }
 
