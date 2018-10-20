@@ -7,7 +7,7 @@ import { getDistanceFromLatLonInKm } from '../../../helpers/DistanceFromLatLong'
 export default {
     Query: {
         distance: async (root, { store, address }) => {
-            let latitude   = 0, longitude = 0;
+            let latitude   = 21.0280, longitude = 105.8510;
             let store_data = await Store.findOne({ _id: store });
             if (!store_data)
                 throw new Exception('Store not found', ExceptionCode.STORE_NOT_FOUND);
@@ -20,11 +20,13 @@ export default {
             //     throw new Exception('Unable to read location!', ExceptionCode.UNABLE_TO_READ_LOCATION);
             // }
 
-            let distance         = getDistanceFromLatLonInKm(store_data.latitude, store_data.longitude, latitude, longitude);
+            let distance = getDistanceFromLatLonInKm(store_data.latitude, store_data.longitude, latitude, longitude);
+
             let shippingCostData = await ShippingCost.findOne({
-                fromKm: { $gte: distance },
-                toKM: { $lte: distance }
+                fromKM: { $lte: distance },
+                toKM: { $gte: distance }
             });
+
 
             if (!shippingCostData)
                 throw new Exception('The shipping address you selected is not supported', ExceptionCode.THE_SHIPPING_ADRESS_ARE_NOT_SUPPORTED);

@@ -282,16 +282,18 @@ const mutation = gql`
         ): StringMessage
 
         addShippingCost(
-            type: String!
-            cost: Float
-        ): Event
+            fromKM: Float!,
+            toKM: Float!
+            cost: Float!,
+        ): ShippingCost
 
         updateShippingCost(
-            id: String!
-            type: String
+            id: String
+            fromKM: Float,
+            toKM: Float            
             cost: Float,
             is_active: Boolean
-        ): Event
+        ): ShippingCost
 
         removeShippingCost(
             id: String!

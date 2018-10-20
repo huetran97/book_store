@@ -1,4 +1,4 @@
-import { Bill, BookStore, Cart, Promotion, ShippingCost, User , Book} from '@private/models';
+import { Bill, Book, BookStore, Cart, Promotion, ShippingCost, User } from '@private/models';
 import Exception from '../../../exeptions/Exception';
 import ExceptionCode from '../../../exeptions/ExceptionCode';
 import * as Joi from 'joi';
@@ -9,21 +9,21 @@ import * as  escapeStringRegexp from 'escape-string-regexp';
 
 export default {
     Query: {
-        bill: async (root, { id }) => {
-            let bill_data = await Bill.findOne({ _id: id });
+        bill: async (root, { id }, { user }) => {
+            let bill_data = await Bill.findOne({ _id: id, user: user._id });
             if (!bill_data)
                 throw new Exception('Bill not found', ExceptionCode.BILL_NOT_FOUND);
             return bill_data;
 
         },
-        bills: async (root, args) => {
+        bills: async (root, args, { user }) => {
             args = new Validate(args)
                 .joi({
                     offset: Joi.number().integer().optional().min(0).default(0),
                     limit: Joi.number().integer().optional().min(5).default(20)
                 }).validate();
 
-            let filter: any = {};
+            let filter: any = { user: user._id };
 
 
             if (args.search) {
@@ -67,14 +67,31 @@ export default {
                 }
 
 
-                let book_store_data: any = await BookStore.findOne({ _id: cart.book_store,
-                    quantity_sold: {$lte: '$amount'}}).populate('book');
+                let book_store_data: any = await BookStore.findOne({
+                    _id: cart.book_store,
+                    // $expr: { $gte: ['$amount', '$quantity_sold'] }
+                }).populate('book');
+
+
+                console.log('book_store_data', book_store_data);
 
 
                 if (!book_store_data)
                     throw new Exception('Book store not found', ExceptionCode.BOOK_STORE_NOT_FOUND);
 
-                let bookData = await Book.findOne({_id: book_store_data.book});
+                let exist = book_store_data.amount - book_store_data.quantity_sold;
+
+                if(cart.number >  exist) {
+                    throw new Exception(`In stock only ${exist} books`, ExceptionCode.IN_STOCK_ONLY_NUMBER_BOOKS);                }
+
+
+                let bookData = await Book.findOne({ _id: book_store_data.book });
+                bookData.total_sold += cart.number;
+
+                await bookData.save();
+
+                book_store_data.quantity_sold += cart.number;
+                await book_store_data.save();
 
                 let newCart = new Cart({
                     user: user._id,
@@ -85,9 +102,6 @@ export default {
                 });
                 await newCart.save();
 
-                book_store_data.quantity_sold +=1;
-
-
                 sum += (book_store_data.book.price * cart.number) - (cart.number * discount * book_store_data.book.price);
 
                 cartID.push(newCart._id);
@@ -96,6 +110,9 @@ export default {
             let shippingData = await ShippingCost.findOne({ _id: shipping });
             if (!shippingData)
                 throw new Exception('Shipping not found', ExceptionCode.SHIPPING_COST_NOT_FOUND);
+
+            sum += shippingData.cost;
+
             let newBill = new Bill({
                 user: user._id,
                 cart: cartID,

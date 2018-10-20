@@ -7,18 +7,38 @@ import ExceptionCode from '../../../exeptions/ExceptionCode';
 
 export default {
     Mutation: {
-        addShippingCost: async (root, { type, cost }) => {
+        addShippingCost: async (root, {  fromKM, toKM , cost}) => {
+            if(toKM<fromKM)
+                throw new Exception('toKM must be larger than fromKM', ExceptionCode.TOKM_MUST_BE_LARGER_THAN_FROMKM);
+
             let shipping_cost_data = new ShippingCost({
-                type: type,
+                fromKM: fromKM,
+                toKM: toKM,
                 cost: cost
             });
             return await shipping_cost_data.save();
         },
-        updateShippingCost: async (root, { id, type, cost, is_active }) => {
+        updateShippingCost: async (root, { id, fromKM, toKM , cost, is_active }) => {
             let update: any = {};
 
-            if (type)
-                update.type = type;
+            let shippingCost = await ShippingCost.findOne({_id: id});
+            if(!shippingCost)
+                throw new Exception('Shipping cost not found', ExceptionCode.SHIPPING_COST_NOT_FOUND);
+
+            if(!fromKM)
+                fromKM = shippingCost.fromKM;
+
+            if(!toKM)
+                toKM = shippingCost.toKM;
+
+            if(toKM < fromKM)
+                throw new Exception('toKM must be larger than fromKM', ExceptionCode.TOKM_MUST_BE_LARGER_THAN_FROMKM);
+
+            if (fromKM)
+                update.fromKM = fromKM;
+
+            if(toKM)
+                update.toKM= toKM;
 
 
             if (cost)

@@ -2,6 +2,7 @@ import gql from 'graphql-tag';
 
 const bookStore = gql`
     type BookStore {
+        id: String,
         book: Book,
         store: Store,
         amount: Float

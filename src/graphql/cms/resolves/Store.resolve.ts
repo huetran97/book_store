@@ -11,12 +11,19 @@ import service from '@private/services';
 export default {
     Mutation: {
         addStore: async (root, { name, phone_number, address }) => {
-
+            let lat, long;
+            let geocoding_data = await service.geocodingApi.getGeocodingData(address);
+            if (geocoding_data.status === 'OK') {
+                lat  = geocoding_data.results[0].geometry.location.lat;
+                long = geocoding_data.results[0].geometry.location.lng;
+            }
             let store = new Store({
                 name: name,
                 name_slug: changeAlias(name),
                 phone_number: phone_number,
-                address: address
+                address: address,
+                latitude: lat,
+                longitude: long
             });
             return await store.save();
         },
