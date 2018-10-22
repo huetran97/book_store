@@ -1,6 +1,12 @@
 import gql from 'graphql-tag';
 
 const ENUM = gql`
+    enum STATUS_BILL{
+        DONE,
+        CANCEL,
+        PENDING
+    }
+    
     enum COVER_TYPE {
         PAPERBACK
         HARDCOVER

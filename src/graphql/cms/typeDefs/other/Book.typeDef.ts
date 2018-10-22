@@ -22,6 +22,7 @@ const book = gql`
         cover_type: String,
         amount: Float,
         is_active: Boolean,
+        book_store: [BookStore]
         total_sold: Float,
 
     },

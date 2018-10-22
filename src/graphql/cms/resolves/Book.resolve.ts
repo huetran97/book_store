@@ -16,6 +16,7 @@ import { changeAlias } from '../../../helpers';
 import Exception from '../../../exeptions/Exception';
 import ExceptionCode from '../../../exeptions/ExceptionCode';
 import { ObjectID } from 'bson';
+import { Store } from '@private/models/index';
 
 export default {
     Mutation: {
@@ -258,6 +259,14 @@ export default {
         },
         issuing_company: async (book) => {
             return await IssuingCompany.findOne({ _id: book.issuing_company });
+        },
+        book_store: async (book) => {
+            return await BookStore.find({ book: book._id });
+        }
+    },
+    BookStore: {
+        store: async (book) => {
+            return await Store.findOne({ _id: new ObjectID(book.store) });
         }
     }
 };

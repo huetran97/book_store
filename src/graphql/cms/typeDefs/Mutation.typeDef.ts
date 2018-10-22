@@ -320,6 +320,9 @@ const mutation = gql`
             staff_cms_group_id: String!
         ): StringMessage!
         
+        updateBill(
+            id: String!
+        ): Bill
         
         
     }
