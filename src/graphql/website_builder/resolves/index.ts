@@ -13,6 +13,8 @@ import Store from './Store.resolve';
 import Subject from './Subject.resolve';
 import Bill from './Bill.resolve';
 import Distance from './Distance.resolve';
+import BankPartner from './BankPartner.resolve';
+import Payment from './Payment.resolve';
 //
 export default [
     User,
@@ -29,5 +31,7 @@ export default [
     Store,
     Subject,
     Bill,
-    Distance
+    Distance,
+    BankPartner,
+    Payment
 ];

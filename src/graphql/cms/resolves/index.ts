@@ -15,6 +15,7 @@ import CmsGroup from './CmsGroup.resolve';
 import Staff from './Staff.resolve';
 import BookStore from './BookStore.resolve';
 import DashBoard from './Dashboard.resolve';
+import BankPartner from './BankPartner.resolve';
 // import StaffCmsGroup from './Staf'
 
 export default [
@@ -34,5 +35,6 @@ export default [
     CmsGroup,
     Staff,
     BookStore,
-    DashBoard
+    DashBoard,
+    BankPartner
 ];

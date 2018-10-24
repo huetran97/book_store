@@ -26,8 +26,9 @@ const mutation = gql`
             current_password: String!,
             new_password: String!
         ): User
-        
+
         addBill(
+            payment_type: PAYMENT_TYPE!,
             carts: [Cart!],
             shipping: String!,
             shipping_address: String!
@@ -43,8 +44,13 @@ const mutation = gql`
             rate:String!,
             comment: String
         ):UserReportBook
-        
-        
+
+        payment(
+            bank_partner_id: String!
+            credit_card_number: Float!
+            account_name: String!,
+            amount: Float!
+        ):StringMessage
     }
 
 `;

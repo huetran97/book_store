@@ -51,6 +51,15 @@ export default {
             };
         }
     },
+    Mutation: {
+        updateBill: async (root, { id, status }) => {
+            let bill_updated = await Bill.findOneAndUpdate({ _id: id }, { $set: { status: status } }, { new: true });
+            if (!bill_updated)
+                throw new Exception('Can not updated Bill', ExceptionCode.CAN_NOT_UPDATE_BILL);
+            return bill_updated;
+
+        }
+    },
     Bill: {
         user: async (bill) => {
             return await User.findOne({ _id: bill.user });
@@ -60,7 +69,7 @@ export default {
         },
         shipping: async (bill) => {
             return await ShippingCost.findOne({ _id: bill.shipping });
-        },
+        }
 
     },
     Cart: {
@@ -68,10 +77,10 @@ export default {
             return await BookStore.findOne({ _id: cart.book });
 
         },
-        store: async(cart)=> {
+        store: async (cart) => {
             return await Store.findOne({ _id: cart.store });
 
         }
 
-    },
+    }
 };

@@ -6,6 +6,10 @@ const ENUM = gql`
         CANCEL,
         PENDING
     }
+    enum PAYMENT_TYPE{
+        CREDIT_CARD,
+        COD
+    }
     
     enum COVER_TYPE {
         PAPERBACK

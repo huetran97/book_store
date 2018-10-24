@@ -168,6 +168,15 @@ const query = gql`
             to_date: Float
         ): GrossProfit
 
+       bankPartner(id: String!): BankPartner
+       
+        """
+        Search name, web_url, api_url
+        """
+       bankPartners(offset: Float =0, limit: Float, search: String, is_active: Boolean): ListBankPartner
+        
+
+
     }
 `;
 export default query;

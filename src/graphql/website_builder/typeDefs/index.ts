@@ -22,6 +22,7 @@ import Cart from './other/Cart.typeDef';
 import UserLogin from './other/UserLogin.typeDef';
 import BookStore from './other/BookStore.typeDef';
 import Distance from './other/Distance.typeDef';
+import BankPartner from './other/BankPartner.typeDef';
 
 export default [
     mutation,
@@ -47,5 +48,6 @@ export default [
     Subject,
     UserLogin,
     BookStore,
-    Distance
+    Distance,
+    BankPartner
 ];

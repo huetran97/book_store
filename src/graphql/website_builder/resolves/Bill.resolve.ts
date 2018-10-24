@@ -53,10 +53,15 @@ export default {
 
     },
     Mutation: {
-        addBill: async (root, { carts, shipping, shipping_address }, { user }) => {
+        addBill: async (root, { carts, shipping, shipping_address,payment_type }, { user }) => {
             let cartID   = [];
             let sum      = 0;
             let discount = 0;
+            let isPaid = false;
+
+            if(payment_type === Bill.CREDIT_CARD)
+                isPaid= true
+
 
             for (let cart of carts) {
                 if (cart.promotion) {
@@ -115,6 +120,8 @@ export default {
             let newBill = new Bill({
                 user: user._id,
                 cart: cartID,
+                payment_type: payment_type,
+                isPaid: isPaid,
                 status: Bill.PENDING,
                 shipping: shipping,
                 shipping_address: shipping_address,

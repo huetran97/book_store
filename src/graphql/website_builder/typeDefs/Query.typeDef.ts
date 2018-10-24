@@ -127,6 +127,14 @@ const query = gql`
         
         distance(store: String!, address:String!): ReportShippingCost
         @requireLogged
+
+        bankPartner(id: String!): BankPartner,
+        @requireLogged
+        """
+        Search name, web_url, api_url
+        """
+        bankPartners(offset: Float =0, limit: Float, search: String): ListBankPartner
+        @requireLogged
     }
 `;
 export default query;

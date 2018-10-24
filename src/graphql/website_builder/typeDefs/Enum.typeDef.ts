@@ -1,6 +1,10 @@
 import gql from 'graphql-tag';
 
 const ENUM = gql`
+    enum PAYMENT_TYPE{
+        CREDIT_CARD,
+        COD
+    }
     enum DEGREE_TYPE {
         UNIVERSITY,
         COLLEGE,

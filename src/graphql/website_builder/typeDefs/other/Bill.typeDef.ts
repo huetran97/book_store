@@ -6,6 +6,8 @@ const bill = gql`
         user: User
         cart: CartOutPut
         distance: Float
+        payment_type: PAYMENT_TYPE
+        isPaid: Boolean
         status: String
         number: Float
         shipping: ShippingCost

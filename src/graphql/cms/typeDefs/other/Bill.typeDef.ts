@@ -5,6 +5,8 @@ const bill = gql`
         id: String
         user: User
         cart: [Cart]
+        payment_type: PAYMENT_TYPE
+        isPaid: Boolean
         distance: Float
         status: String
         number: Float

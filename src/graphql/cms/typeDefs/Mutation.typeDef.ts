@@ -325,7 +325,38 @@ const mutation = gql`
         updateBill(
             id: String!
         ): Bill
-        
+
+        addBankPartner (
+            name: String!,
+            icon_url: String,
+            api_url: String!,
+            api_secret: String!
+            api_key: String!,
+            web_url: String!,
+            description: String
+        ): BankPartner
+
+        updateBankPartner(
+            id: String!,
+            name: String,
+            icon_url: String,
+            api_url: String,
+            api_secret: String,
+            api_key: String,
+            web_url: String,
+            is_active: Boolean,
+            description: String
+        ): BankPartner
+
+        removeBankPartner(
+            id: String!
+        ): StringMessage
+
+        updateBill(
+            id: String!,
+            status: STATUS_BILL
+        ):Bill
+
     }
 `;
 export default mutation;
