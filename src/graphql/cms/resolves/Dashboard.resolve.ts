@@ -69,9 +69,6 @@ export default {
                 ]
             );
 
-
-            console.log('total', cart_data);
-
             if (cart_data.length > 0)
                 total = cart_data[0].amount;
 
@@ -112,10 +109,9 @@ export default {
                 if (cart_data.length > 0)
                     total = cart_data[0].amount;
 
-                item.cost_of_goods_sold = total;
+                item.goods_sale = total;
                 data.push(item);
             }
-            console.log('data', data);
             return data;
         }
 
@@ -166,7 +162,6 @@ export default {
                     }
                 }).distinct('book');
 
-                console.log('bookId', bookId);
                 let book_data = await Book.aggregate(
                     [
                         {
@@ -191,7 +186,6 @@ export default {
 
                     ]
                 );
-                console.log('data', book_data);
 
                 if (book_data.length > 0)
                     total = book_data[0].cost;
@@ -221,26 +215,27 @@ export default {
                             as: 'book_cart'
                         }
                     },
+                    { $unwind: '$book_cart' },
+                    {
+                        $project: {
+                            total: {
+                                $multiply: [
+                                    { $subtract: ['$book_cart.price', '$book_cart.historical_cost'] },
+                                    '$number'
+                                ]
+                            }
+                        }
 
-                    // {
-                    //     $project: {
-                    //         total: { $multiply: ['$number', '$price'] }
-                    //
-                    //     }
-                    //
-                    // },
-                    // {
-                    //     $group: {
-                    //         _id: '',
-                    //         amount: { $sum: '$total' }
-                    //     }
-                    // }
+                    },
+                    {
+                        $group: {
+                            _id: '',
+                            amount: { $sum: '$total' }
+                        }
+                    }
 
                 ]
             );
-
-
-            console.log('total', cart_data);
 
             if (cart_data.length > 0)
                 total = cart_data[0].amount;
@@ -259,14 +254,30 @@ export default {
                     [
                         {
                             $match: {
-                                created_at: { $gte: moment(from_date).toDate(), $lte: moment(to_date).toDate() },
+                                created_at: {
+                                    $gte: moment(from_date).toDate(), $lte: moment(to_date).toDate(),
+                                },
                                 store: new ObjectID(store._id)
+
                             }
                         },
                         {
+                            $lookup: {
+                                from: 'book',
+                                localField: 'book',
+                                foreignField: '_id',
+                                as: 'book_cart'
+                            }
+                        },
+                        { $unwind: '$book_cart' },
+                        {
                             $project: {
-                                total: { $multiply: ['$number', '$price'] }
-
+                                total: {
+                                    $multiply: [
+                                        { $subtract: ['$book_cart.price', '$book_cart.historical_cost'] },
+                                        '$number'
+                                    ]
+                                }
                             }
 
                         },
@@ -282,10 +293,9 @@ export default {
                 if (cart_data.length > 0)
                     total = cart_data[0].amount;
 
-                item.cost_of_goods_sold = total;
+                item.gross_profit = total;
                 data.push(item);
             }
-            console.log('data', data);
             return data;
         }
 

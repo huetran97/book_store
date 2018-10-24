@@ -11,13 +11,13 @@ export default {
             if (toKM < fromKM)
                 throw new Exception('toKM must be larger than fromKM', ExceptionCode.TOKM_MUST_BE_LARGER_THAN_FROMKM);
 
-            let shipping_data = ShippingCost.findOne({
+            let shipping_data = await ShippingCost.findOne({
                 $or: [
-                    { fromKM: { $gt: fromKM }, toKM: { $gt: fromKM } },
-                    { fromKM: { $gt: toKM }, toKM: { $gt: toKM } }
+                    { fromKM: { $lt: fromKM }, toKM: { $gt: fromKM } },
+                    { fromKM: { $lt: toKM }, toKM: { $gt: toKM } }
                 ]
             });
-
+            console.log(shipping_data);
             if (shipping_data)
                 throw new Exception('Shipping Cost is exist', ExceptionCode.THE_SHIPPING_COST_IS_EXIST);
 
@@ -47,8 +47,8 @@ export default {
             if (fromKM) {
                 let shipping_data = ShippingCost.findOne({
                     $or: [
-                        { fromKM: { $gt: fromKM }, toKM: { $lt: fromKM } },
-                        { fromKM: { gt: toKM }, toKM: { $lt: toKM } }
+                        { fromKM: { $lt: fromKM }, toKM: { $gt: fromKM } },
+                        { fromKM: { $lt: toKM }, toKM: { $gt: toKM } }
                     ]
                 });
 
@@ -62,8 +62,8 @@ export default {
             if (toKM) {
                 let shipping_data = ShippingCost.findOne({
                     $or: [
-                        { fromKM: { $gt: fromKM }, toKM: { $gt: fromKM } },
-                        { fromKM: { $gt: toKM }, toKM: { $gt: toKM } }
+                        { fromKM: { $lt: fromKM }, toKM: { $gt: fromKM } },
+                        { fromKM: { $lt: toKM }, toKM: { $gt: toKM } }
                     ]
                 });
 
