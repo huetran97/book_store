@@ -9,6 +9,8 @@ const store = gql`
         total_staff:Float,
         total_book: Float,
         books: [Book],
+        latitude: Float,
+        longitude: Float,
         staffs: [Staff],
         is_active: Boolean
     },

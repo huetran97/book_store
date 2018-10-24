@@ -153,6 +153,21 @@ const query = gql`
         ): CmsGroup
 
 
+        costOfGoodsSold(
+            from_date: Float,
+            to_date: Float
+        ): CostOfGoodsSold,
+
+        goodsSale(
+            from_date: Float,
+            to_date: Float
+        ): GoodsSale,
+        
+        grossProfit(
+            from_date: Float,
+            to_date: Float
+        ): GrossProfit
+
     }
 `;
 export default query;

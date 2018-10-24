@@ -23,6 +23,7 @@ import Subject from './other/Subject.typeDef';
 import Cart from './other/Cart.typeDef';
 import Staff from './other/Staff.typeDef';
 import BookStore from './other/BookStore.typeDef';
+import DashBoard from './other/Dashboard.typeDef';
 
 export default [
     mutation,
@@ -49,5 +50,6 @@ export default [
     Subject,
     Cart,
     Staff,
-    BookStore
+    BookStore,
+    DashBoard
 ];

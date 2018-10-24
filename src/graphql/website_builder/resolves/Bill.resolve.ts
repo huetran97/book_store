@@ -1,4 +1,4 @@
-import { Bill, Book, BookStore, Cart, Promotion, ShippingCost, User } from '@private/models';
+import { Bill, Book, BookStore, Cart, Promotion, ShippingCost, User, Store } from '@private/models';
 import Exception from '../../../exeptions/Exception';
 import ExceptionCode from '../../../exeptions/ExceptionCode';
 import * as Joi from 'joi';
@@ -68,12 +68,9 @@ export default {
 
 
                 let book_store_data: any = await BookStore.findOne({
-                    _id: cart.book_store,
+                    _id: cart.book_store
                     // $expr: { $gte: ['$amount', '$quantity_sold'] }
-                }).populate('book');
-
-
-                console.log('book_store_data', book_store_data);
+                });
 
 
                 if (!book_store_data)
@@ -81,14 +78,15 @@ export default {
 
                 let exist = book_store_data.amount - book_store_data.quantity_sold;
 
-                if(cart.number >  exist) {
-                    throw new Exception(`In stock only ${exist} books`, ExceptionCode.IN_STOCK_ONLY_NUMBER_BOOKS);                }
+                if (cart.number > exist) {
+                    throw new Exception(`In stock only ${exist} books`, ExceptionCode.IN_STOCK_ONLY_NUMBER_BOOKS);
+                }
 
 
-                let bookData = await Book.findOne({ _id: book_store_data.book });
-                bookData.total_sold += cart.number;
+                let book_data = await Book.findOne({ _id: book_store_data.book });
+                book_data.total_sold += cart.number;
 
-                await bookData.save();
+                await book_data.save();
 
                 book_store_data.quantity_sold += cart.number;
                 await book_store_data.save();
@@ -96,13 +94,14 @@ export default {
                 let newCart = new Cart({
                     user: user._id,
                     book: book_store_data.book,
+                    store: book_store_data.store,
                     promotion: cart.promotion,
                     number: cart.number,
-                    price: book_store_data.book.price
+                    price: book_data.price
                 });
                 await newCart.save();
 
-                sum += (book_store_data.book.price * cart.number) - (cart.number * discount * book_store_data.book.price);
+                sum += (book_data.price * cart.number) - (cart.number * discount * book_data.price);
 
                 cartID.push(newCart._id);
             }
@@ -135,6 +134,7 @@ export default {
         },
         shipping: async (bill) => {
             return await ShippingCost.findOne({ _id: bill.shipping });
-        }
-    }
+        },
+
+    },
 };

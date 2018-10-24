@@ -190,6 +190,7 @@ const mutation = gql`
             description: String,
             author: String!,
             price: Float!,
+            historical_cost: Float!,
             publisher: String!,
             publication_date: Float,
             language: String!,
@@ -210,6 +211,7 @@ const mutation = gql`
             description: String,
             author: String,
             price: Float,
+            historical_cost: Float,
             publisher: String,
             publication_date: Float,
             language: String,
@@ -227,13 +229,13 @@ const mutation = gql`
         removeBook(
             id: String!
         ): StringMessage
-        
+
         addBookStore(
             book: String!,
             store: String!
             amount: Float!
         ): BookStore
-        
+
         updateBookStore(
             id: String!,
             book: String,
@@ -290,7 +292,7 @@ const mutation = gql`
         updateShippingCost(
             id: String
             fromKM: Float,
-            toKM: Float            
+            toKM: Float
             cost: Float,
             is_active: Boolean
         ): ShippingCost
@@ -314,16 +316,15 @@ const mutation = gql`
             cms_group_id: String!,
             email_staff: String!
         ): StaffCmsGroup!
-       
+
 
         removeStaffCmsGroup(
             staff_cms_group_id: String!
         ): StringMessage!
-        
+
         updateBill(
             id: String!
         ): Bill
-        
         
     }
 `;

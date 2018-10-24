@@ -7,9 +7,19 @@ import ExceptionCode from '../../../exeptions/ExceptionCode';
 
 export default {
     Mutation: {
-        addShippingCost: async (root, {  fromKM, toKM , cost}) => {
-            if(toKM<fromKM)
+        addShippingCost: async (root, { fromKM, toKM, cost }) => {
+            if (toKM < fromKM)
                 throw new Exception('toKM must be larger than fromKM', ExceptionCode.TOKM_MUST_BE_LARGER_THAN_FROMKM);
+
+            let shipping_data = ShippingCost.findOne({
+                $or: [
+                    { fromKM: { $gt: fromKM }, toKM: { $gt: fromKM } },
+                    { fromKM: { $gt: toKM }, toKM: { $gt: toKM } }
+                ]
+            });
+
+            if (shipping_data)
+                throw new Exception('Shipping Cost is exist', ExceptionCode.THE_SHIPPING_COST_IS_EXIST);
 
             let shipping_cost_data = new ShippingCost({
                 fromKM: fromKM,
@@ -18,27 +28,50 @@ export default {
             });
             return await shipping_cost_data.save();
         },
-        updateShippingCost: async (root, { id, fromKM, toKM , cost, is_active }) => {
+        updateShippingCost: async (root, { id, fromKM, toKM, cost, is_active }) => {
             let update: any = {};
 
-            let shippingCost = await ShippingCost.findOne({_id: id});
-            if(!shippingCost)
+            let shippingCost = await ShippingCost.findOne({ _id: id });
+            if (!shippingCost)
                 throw new Exception('Shipping cost not found', ExceptionCode.SHIPPING_COST_NOT_FOUND);
 
-            if(!fromKM)
+            if (!fromKM)
                 fromKM = shippingCost.fromKM;
 
-            if(!toKM)
+            if (!toKM)
                 toKM = shippingCost.toKM;
 
-            if(toKM < fromKM)
+            if (toKM < fromKM)
                 throw new Exception('toKM must be larger than fromKM', ExceptionCode.TOKM_MUST_BE_LARGER_THAN_FROMKM);
 
-            if (fromKM)
+            if (fromKM) {
+                let shipping_data = ShippingCost.findOne({
+                    $or: [
+                        { fromKM: { $gt: fromKM }, toKM: { $lt: fromKM } },
+                        { fromKM: { gt: toKM }, toKM: { $lt: toKM } }
+                    ]
+                });
+
+                if (shipping_data)
+                    throw new Exception('Shipping Cost is exist', ExceptionCode.THE_SHIPPING_COST_IS_EXIST);
                 update.fromKM = fromKM;
 
-            if(toKM)
-                update.toKM= toKM;
+
+            }
+
+            if (toKM) {
+                let shipping_data = ShippingCost.findOne({
+                    $or: [
+                        { fromKM: { $gt: fromKM }, toKM: { $gt: fromKM } },
+                        { fromKM: { $gt: toKM }, toKM: { $gt: toKM } }
+                    ]
+                });
+
+                if (shipping_data)
+                    throw new Exception('Shipping Cost is exist', ExceptionCode.THE_SHIPPING_COST_IS_EXIST);
+                update.toKM = toKM;
+
+            }
 
 
             if (cost)
@@ -59,7 +92,7 @@ export default {
             let shipping_cost_removed = await ShippingCost.findByIdAndRemove({ _id: id, is_active: true });
 
             if (!shipping_cost_removed)
-                throw new Exception('Can not remove Shipping Cost',ExceptionCode.CAN_NOT_REMOVE_SHIPPING_COST );
+                throw new Exception('Can not remove Shipping Cost', ExceptionCode.CAN_NOT_REMOVE_SHIPPING_COST);
 
             return {
                 message: 'Remove Shipping Cost successful'
@@ -69,7 +102,7 @@ export default {
     Query: {
         shippingCost: async (root, { id }) => {
             let shipping_cost = await ShippingCost.findOne({ _id: id });
-            if(!shipping_cost)
+            if (!shipping_cost)
                 throw new Exception('Shipping cost not found', ExceptionCode.SHIPPING_COST_NOT_FOUND);
 
             return shipping_cost;

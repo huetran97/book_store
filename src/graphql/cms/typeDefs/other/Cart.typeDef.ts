@@ -5,6 +5,7 @@ const cart = gql`
         id: String
         user: User
         book: Book
+        store: Store
         promotion: Promotion
         number: Int
         price: Float

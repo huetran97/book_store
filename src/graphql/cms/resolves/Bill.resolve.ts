@@ -1,7 +1,7 @@
 import { Bill } from '@private/models';
 import Validate from '../../../helpers/validate';
 import * as Joi from 'joi';
-import { User } from '@private/models/index';
+import { BookStore, Cart, ShippingCost, Store, User } from '@private/models/index';
 import * as  escapeStringRegexp from 'escape-string-regexp';
 import { changeAlias } from '../../../helpers';
 import Exception from '../../../exeptions/Exception';
@@ -50,5 +50,28 @@ export default {
                 args
             };
         }
-    }
+    },
+    Bill: {
+        user: async (bill) => {
+            return await User.findOne({ _id: bill.user });
+        },
+        cart: async (bill) => {
+            return await Cart.find({ _id: { $in: bill.cart } });
+        },
+        shipping: async (bill) => {
+            return await ShippingCost.findOne({ _id: bill.shipping });
+        },
+
+    },
+    Cart: {
+        book: async (cart) => {
+            return await BookStore.findOne({ _id: cart.book });
+
+        },
+        store: async(cart)=> {
+            return await Store.findOne({ _id: cart.store });
+
+        }
+
+    },
 };

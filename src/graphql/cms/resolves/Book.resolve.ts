@@ -9,7 +9,7 @@ import {
     Subject
 } from '@private/models';
 import * as _ from 'lodash';
-import Validate from '../../../helpers/validate';
+import Validate, { isDateYYYYMMDD, isMongoObjectId } from '../../../helpers/validate';
 import * as Joi from 'joi';
 import * as  escapeStringRegexp from 'escape-string-regexp';
 import { changeAlias } from '../../../helpers';
@@ -21,11 +21,27 @@ import { Store } from '@private/models/index';
 export default {
     Mutation: {
         addBook: async (root, {
-            name, description, author, price, publisher, publication_date, language,
+            name, description, author, price, historical_cost, publisher, publication_date, language,
             domain_knowledge, subjects, size, issuing_company, print_length, cover_type, thumbnail,
             book_code,
-            amount,
+            amount
         }) => {
+            new Validate({
+                author, price, historical_cost, publisher, publication_date, language, domain_knowledge,
+                subjects, issuing_company, amount
+            })
+                .joi({
+                    author: isMongoObjectId(),
+                    price: Joi.number().optional().min(0),
+                    historical_cost: Joi.number().optional().min(0),
+                    publisher: isMongoObjectId(),
+                    publication_date: isDateYYYYMMDD(),
+                    language: isMongoObjectId(),
+                    domain_knowledge: isMongoObjectId(),
+                    subjects: Joi.array().items(isMongoObjectId()),
+                    issuing_company: isMongoObjectId(),
+                    amount: Joi.number().optional().min(0)
+                }).validate();
 
             let language_data         = await Language.findOne({ _id: language });
             let domain_knowledge_data = await DomainKnowledge.findOne({ _id: domain_knowledge });
@@ -54,6 +70,7 @@ export default {
                 description: description,
                 author: author,
                 price: price,
+                historical_cost: historical_cost,
                 publisher: publisher,
                 publication_date: publication_date,
                 language: language,
@@ -71,9 +88,25 @@ export default {
         updateBook: async (root, {
             id, name, description, author, price, publisher, publication_date,
             language, domain_knowledge, subjects, size, issuing_company,
-            thumbnail,amount,
+            thumbnail, amount, historical_cost,
             print_length, cover_type, book_code, is_active
         }) => {
+            new Validate({
+                author, price, historical_cost, publisher, publication_date, language, domain_knowledge,
+                subjects, issuing_company, amount
+            })
+                .joi({
+                    author: isMongoObjectId(),
+                    price: Joi.number().optional().min(0),
+                    historical_cost: Joi.number().optional().min(0),
+                    publisher: isMongoObjectId(),
+                    publication_date: isDateYYYYMMDD(),
+                    language: isMongoObjectId(),
+                    domain_knowledge: isMongoObjectId(),
+                    subjects: Joi.array().items(isMongoObjectId()),
+                    issuing_company: isMongoObjectId(),
+                    amount: Joi.number().optional().min(0)
+                }).validate();
             let update: any = {};
 
             // let language_data         = await Language.findOne({ _id: language });
@@ -98,7 +131,7 @@ export default {
             if (name)
                 update.name = name;
 
-            if (amount)
+            if (_.isNumber(amount))
                 update.amount = amount;
 
             if (book_code) {
@@ -123,8 +156,12 @@ export default {
             }
 
 
-            if (price)
+            if (_.isNumber(price))
                 update.price = price;
+
+            if (_.isNumber(historical_cost))
+                update.historical_cost = historical_cost;
+
             if (publisher) {
                 let publisher_data = await Publisher.findOne({ _id: publisher });
                 if (!publisher_data)
@@ -142,8 +179,11 @@ export default {
             if (domain_knowledge)
                 update.domain_knowledge = domain_knowledge;
 
-            if (subjects.length > 0)
-                update.subject = subjects;
+            if (subjects) {
+                if (subjects.length > 0)
+                    update.subject = subjects;
+
+            }
 
             if (size)
                 update.size = size;
@@ -252,7 +292,7 @@ export default {
             };
         },
         author: async (book) => {
-            return await Author.findOne({ _id:new ObjectID(book.author) });
+            return await Author.findOne({ _id: new ObjectID(book.author) });
         },
         publisher: async (book) => {
             return await Publisher.findOne({ _id: book.publisher });

@@ -14,6 +14,7 @@ import Event from './Event.resolve';
 import CmsGroup from './CmsGroup.resolve';
 import Staff from './Staff.resolve';
 import BookStore from './BookStore.resolve';
+import DashBoard from './Dashboard.resolve';
 // import StaffCmsGroup from './Staf'
 
 export default [
@@ -32,5 +33,6 @@ export default [
     Event,
     CmsGroup,
     Staff,
-    BookStore
+    BookStore,
+    DashBoard
 ];
