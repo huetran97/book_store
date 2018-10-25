@@ -8,5 +8,3 @@ import { MONGODB_URI } from '../configs';
 mongoose.connect(MONGODB_URI);
 
 // Job process
-
-kue.app.listen(3001);

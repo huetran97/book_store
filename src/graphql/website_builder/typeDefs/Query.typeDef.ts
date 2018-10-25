@@ -9,16 +9,7 @@ const query = gql`
 
         book(book: String!): Book,
         books(offset: Int =0, limit: Int, store:String, search: String, is_hot_sale:Boolean, is_newest: Boolean): ListBook
-
-        shipingCost(
-            id: String!
-        ): ShippingCost
-
-        shipingCosts(
-            offset: Int,
-            limit: Int,
-        ): ListShippingCost
-
+        
         issuingCompany(
             id: String!
         ): IssuingCompany

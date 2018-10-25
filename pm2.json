@@ -3,10 +3,6 @@
     {
       "name": "api",
       "script": "./dist"
-    },
-    {
-      "name": "worker",
-      "script": "./dist/jobs/command.js"
     }
   ]
 }

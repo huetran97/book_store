@@ -42,6 +42,7 @@ export default {
                 update.address = address;
 
                 let geocoding_data = await service.geocodingApi.getGeocodingData(address);
+                console.log('geocoding_data', geocoding_data);
                 if (geocoding_data.status === 'OK') {
                     update.latitude  = geocoding_data.results[0].geometry.location.lat;
                     update.longitude = geocoding_data.results[0].geometry.location.lng;
@@ -59,7 +60,7 @@ export default {
             return store_updated;
         },
 
-        removePublisher: async (root, { id }) => {
+        removeStore: async (root, { id }) => {
             let store_removed = await Store.findOneAndUpdate({
                 _id: id,
                 is_active: true

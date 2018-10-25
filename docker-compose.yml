@@ -1,5 +1,10 @@
 version: "2"
 services:
+#  bank:
+#    image: registry.gitlab.com/huetran97/book-store/bank:latest
+#    depends_on:
+#      - mongodb
+#      - cache
 
   api:
     image: registry.gitlab.com/huetran97/book-store/api:latest
@@ -10,6 +15,7 @@ services:
       - mongodb
       - cache
     environment:
+      NODE_ENV: production
       JWT_SECRET: 123456
       MONGODB_URI: mongodb://mongodb:27017/demo
       REDIS_HOST: cache
@@ -23,6 +29,8 @@ services:
       ACCESS_TOKEN_WEB_EXPIRE_IN: 1y
       REFRESH_TOKEN_CMS_EXPIRE_IN: 1y
       REFRESH_TOKEN_WEB_EXPIRE_IN: 1y
+      API_KEY: AIzaSyAG5RnJDcPBRu594FGZLzKkgoexSDpg6AQ
+      API_KEY_CHANH_SA: AIzaSyAzUbUmzKSKjt6tKzUihngCgvdwUE4IlnU
 
   mongodb:
     image: mongo

@@ -41,7 +41,7 @@ export default {
         },
 
         removeAuthor: async (root, { id }) => {
-            let authorRemoved = await User.findOneAndUpdate({
+            let authorRemoved = await Author.findOneAndUpdate({
                 _id: id,
                 is_active: true
             }, { $set: { is_active: false } }, { new: true });

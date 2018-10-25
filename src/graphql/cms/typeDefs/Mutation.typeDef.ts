@@ -321,11 +321,7 @@ const mutation = gql`
         removeStaffCmsGroup(
             staff_cms_group_id: String!
         ): StringMessage!
-
-        updateBill(
-            id: String!
-        ): Bill
-
+        
         addBankPartner (
             name: String!,
             icon_url: String,
