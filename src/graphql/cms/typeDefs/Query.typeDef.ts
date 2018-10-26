@@ -144,7 +144,7 @@ const query = gql`
             offset: Int,
             limit: Int,
             search: String
-        ): Bill
+        ): ListBill
         
         
         cmsGroups: [CmsGroup]

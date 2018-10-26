@@ -17,7 +17,7 @@ export default {
                     { fromKM: { $lt: toKM }, toKM: { $gt: toKM } }
                 ]
             });
-            console.log(shipping_data);
+
             if (shipping_data)
                 throw new Exception('Shipping Cost is exist', ExceptionCode.THE_SHIPPING_COST_IS_EXIST);
 
@@ -26,6 +26,7 @@ export default {
                 toKM: toKM,
                 cost: cost
             });
+
             return await shipping_cost_data.save();
         },
         updateShippingCost: async (root, { id, fromKM, toKM, cost, is_active }) => {
@@ -89,7 +90,10 @@ export default {
         },
 
         removeShippingCost: async (root, { id }) => {
-            let shipping_cost_removed = await ShippingCost.findByIdAndRemove({ _id: id, is_active: true });
+            let shipping_cost_removed = await ShippingCost.findByIdAndRemove({ _id: id,  $or:[
+                    { is_active: true },
+                    {is_active: null}
+                ] });
 
             if (!shipping_cost_removed)
                 throw new Exception('Can not remove Shipping Cost', ExceptionCode.CAN_NOT_REMOVE_SHIPPING_COST);
@@ -117,7 +121,10 @@ export default {
             let filter: any = {};
 
             if (_.isBoolean(args.is_active)) {
-                filter.is_active = args.is_active;
+                filter.$or = [
+                    {is_active: args.is_active},
+                    {is_active: null}
+                ];
             }
 
             let list = ShippingCost

@@ -60,10 +60,11 @@ export default {
         removeUser: async (root, { id }) => {
             let user_remove = await User.findOneAndUpdate({
                 _id: id,
-                is_active: true
+                $or:[
+                    { is_active: true },
+                    {is_active: null}
+                ]
             }, { $set: { is_active: false } }, { new: true });
-
-            console.log('user', user_remove);
 
             if (!user_remove)
                 throw new Exception('Can not remove user', ExceptionCode.CAN_NOT_REMOVE_USER);
@@ -81,13 +82,11 @@ export default {
         users: async (root, args) => {
             args = new Validate(args)
                 .joi({
-                    offset: Joi.number().integer().optional().min(0).default(0),
-                    limit: Joi.number().integer().optional().min(5).default(20)
+                    offset: Joi.number().integer().optional().min(0),
+                    limit: Joi.number().integer().optional().min(5)
                 }).validate();
 
             let filter: any = {};
-
-            console.log('args', args);
 
             if (args.search) {
                 filter.$or = [
@@ -98,13 +97,19 @@ export default {
             }
 
             if (_.isBoolean(args.is_active)) {
-                filter.is_active = args.is_active;
+                filter.$or = [
+                    { is_active: args.is_active },
+                    { is_active: null }
+                ];
             }
 
             let list = User
-                .find(filter)
-                .skip(args.offset)
-                .limit(args.limit);
+                .find(filter);
+
+            if (args.offset)
+                list.skip(args.offset);
+            if (args.limit)
+                list.skip(args.limit);
 
             return {
                 list_user: await list,

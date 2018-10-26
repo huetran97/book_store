@@ -2,7 +2,6 @@ import { Author } from '@private/models';
 import { changeAlias } from '../../../helpers';
 import Validate from '../../../helpers/validate';
 import * as Joi from 'joi';
-import * as _ from 'lodash';
 import * as  escapeStringRegexp from 'escape-string-regexp';
 import Exception from '../../../exeptions/Exception';
 import ExceptionCode from '../../../exeptions/ExceptionCode';
@@ -21,10 +20,10 @@ export default {
             args = new Validate(args)
                 .joi({
                     offset: Joi.number().integer().optional().min(0).default(0),
-                    limit: Joi.number().integer().optional().min(5).default(20)
+                    limit: Joi.number().integer().optional().min(5).default(100)
                 }).validate();
 
-            let filter: any = {is_active:true};
+            let filter: any = { is_active: true };
 
 
             if (args.search) {
@@ -47,7 +46,7 @@ export default {
     },
     ListAuthor: {
         total_author: async ({ args }) => {
-            let filter: any = {is_active:true};
+            let filter: any = { is_active: true };
 
             if (args.search) {
                 filter.$or = [

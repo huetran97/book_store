@@ -29,7 +29,10 @@ const ENUM = gql`
         ISSUING_COMPANY_MANAGER,
         STORE_MANAGER,
         CMS_GROUP_MANAGER,
-        CMS_MANAGER}
+        CMS_MANAGER
+        
+    
+    }
 `;
 
 export default ENUM;

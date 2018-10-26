@@ -62,7 +62,6 @@ export default {
                 ) throw new Error('Invalid data1');
 
             }
-            console.log('author', author);
 
             let book_data = new Book({
                 name: name,
@@ -210,7 +209,10 @@ export default {
             return book_updated;
         },
         removeBook: async (root, { id }) => {
-            let book_removed = await Book.findOneAndRemove({ _id: id, is_active: true });
+            let book_removed = await Book.findOneAndRemove({ _id: id,  $or:[
+                    { is_active: true },
+                    {is_active: null}
+                ] });
 
             if (!book_removed)
                 throw new Error('Can not remove book');
@@ -231,8 +233,8 @@ export default {
         books: async (root, args) => {
             args = new Validate(args)
                 .joi({
-                    offset: Joi.number().integer().optional().min(0).default(0),
-                    limit: Joi.number().integer().optional().min(5).default(20)
+                    offset: Joi.number().integer().optional().min(0),
+                    limit: Joi.number().integer().optional().min(5)
                 }).validate();
 
             let filter: any = {};
@@ -244,8 +246,12 @@ export default {
             }
 
             if (_.isBoolean(args.is_active)) {
-                filter.is_active = args.is_active;
+                filter.$or = [
+                    {is_active: args.is_active},
+                    {is_active: null}
+                ];
             }
+
             if (args.store) {
                 let bookInStoreID = await BookStore.find({ store: args.store }).distinct('book');
                 filter._id        = { $in: bookInStoreID };
@@ -265,11 +271,12 @@ export default {
 
             let list = Book
                 .find(filter)
-                .skip(args.offset)
-                .limit(args.limit)
                 .sort(sort)
             ;
-
+            if (args.offset)
+                list.skip(args.offset);
+            if (args.limit)
+                list.skip(args.limit);
             return {
                 list_book: await list,
                 total_book: await list.count(),

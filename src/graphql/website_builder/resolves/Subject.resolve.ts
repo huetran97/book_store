@@ -12,10 +12,13 @@ export default {
             args = new Validate(args)
                 .joi({
                     offset: Joi.number().integer().optional().min(0).default(0),
-                    limit: Joi.number().integer().optional().min(5).default(20)
+                    limit: Joi.number().integer().optional().min(5).default(1000)
                 }).validate();
 
-            let filter: any = { is_active: true };
+            let filter: any = { $or:[
+                    { is_active: true },
+                    {is_active: null}
+                ]};
 
             if (args.domain_knowledge) {
                 filter.domain_knowledge = args.domain_knowledge;
@@ -34,7 +37,10 @@ export default {
     },
     ListSubject: {
         total_subject: async ({ args }) => {
-            let filter: any = { is_active: true };
+            let filter: any = {  $or:[
+                    { is_active: true },
+                    {is_active: null}
+                ] };
             if (args) {
 
                 if (args.domain_knowledge) {

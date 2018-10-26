@@ -1,7 +1,7 @@
 import { Bill } from '@private/models';
 import Validate from '../../../helpers/validate';
 import * as Joi from 'joi';
-import { BookStore, Cart, ShippingCost, Store, User } from '@private/models/index';
+import { Book, Cart, ShippingCost, Store, User } from '@private/models/index';
 import * as  escapeStringRegexp from 'escape-string-regexp';
 import { changeAlias } from '../../../helpers';
 import Exception from '../../../exeptions/Exception';
@@ -19,12 +19,11 @@ export default {
         bills: async (root, args) => {
             args = new Validate(args)
                 .joi({
-                    offset: Joi.number().integer().optional().min(0).default(0),
-                    limit: Joi.number().integer().optional().min(5).default(20)
+                    offset: Joi.number().integer().optional().min(0),
+                    limit: Joi.number().integer().optional().min(5)
                 }).validate();
 
             let filter: any = {};
-
 
             if (args.search) {
                 let user_id = await User.find({
@@ -33,6 +32,7 @@ export default {
                         { phone_number: args.search }
                     ]
                 }).distinct('_id');
+
                 filter.$or  = [
                     { staff: { $in: { user_id } } },
                     { _id: args.search }
@@ -41,13 +41,16 @@ export default {
 
 
             let list = Bill
-                .find(filter)
-                .skip(args.offset)
-                .limit(args.limit);
+                .find(filter);
 
+            if (args.offset)
+                list.skip(args.offset);
+            if (args.limit)
+                list.skip(args.limit);
             return {
                 list_bill: await list,
-                args
+                args,
+                total_bill: await list.countDocuments()
             };
         }
     },
@@ -74,7 +77,7 @@ export default {
     },
     Cart: {
         book: async (cart) => {
-            return await BookStore.findOne({ _id: cart.book });
+            return await Book.findOne({ _id: cart.book });
 
         },
         store: async (cart) => {

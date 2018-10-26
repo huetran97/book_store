@@ -46,7 +46,10 @@ export default {
         removeIssuingCompany: async (root, { id }) => {
             let issuing_company_removed = await IssuingCompany.findOneAndUpdate({
                 _id: id,
-                is_active: true
+                $or:[
+                    { is_active: true },
+                    {is_active: null}
+                ]
             }, { $set: { is_active: false } }, { new: true });
 
             if (!issuing_company_removed)
@@ -64,8 +67,8 @@ export default {
         issuingCompanys: async (root, args) => {
             args = new Validate(args)
                 .joi({
-                    offset: Joi.number().integer().optional().min(0).default(0),
-                    limit: Joi.number().integer().optional().min(5).default(20)
+                    offset: Joi.number().integer().optional().min(0),
+                    limit: Joi.number().integer().optional().min(5)
                 }).validate();
 
             let filter: any = {};
@@ -77,13 +80,20 @@ export default {
             }
 
             if (_.isBoolean(args.is_active)) {
-                filter.is_active = args.is_active;
+                filter.$or = [
+                    { is_active: args.is_active },
+                    { is_active: null }
+                ];
             }
 
             let list = IssuingCompany
-                .find(filter)
-                .skip(args.offset)
-                .limit(args.limit);
+                .find(filter);
+
+
+            if (args.offset)
+                list.skip(args.offset);
+            if (args.limit)
+                list.skip(args.limit);
 
             return {
                 list_issuing_company: await list,
@@ -97,7 +107,7 @@ export default {
 
             if (args.search) {
                 filter.$or = [
-                    { name_slug: new RegExp(escapeStringRegexp(changeAlias(args.search)), 'gi') },
+                    { name_slug: new RegExp(escapeStringRegexp(changeAlias(args.search)), 'gi') }
                 ];
             }
 

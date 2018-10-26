@@ -26,7 +26,7 @@ export default {
             args = new Validate(args)
                 .joi({
                     offset: Joi.number().integer().optional().min(0).default(0),
-                    limit: Joi.number().integer().optional().min(5).default(20)
+                    limit: Joi.number().integer().optional().min(5).default(1000)
                 }).validate();
 
             let filter: any = {
@@ -43,6 +43,18 @@ export default {
             if (args.store) {
                 let bookInStoreID = await BookStore.find({ store: args.store }).distinct('book');
                 filter._id        = { $in: bookInStoreID };
+            }
+
+            if (args.language) {
+                filter.language = args.language;
+            }
+
+            if (args.subject) {
+                filter.subject = args.subject;
+            }
+
+            if (args.domain_knowledge) {
+                filter.domain_knowledge = args.domain_knowledge;
             }
 
             let sort: any = {

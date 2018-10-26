@@ -18,7 +18,7 @@ export default {
             args = new Validate(args)
                 .joi({
                     offset: Joi.number().integer().optional().min(0).default(0),
-                    limit: Joi.number().integer().optional().min(5).default(20)
+                    limit: Joi.number().integer().optional().min(5).default(100)
                 }).validate();
 
             let list = Event

@@ -11,7 +11,8 @@ import service from '@private/services';
 export default {
     Mutation: {
         addStore: async (root, { name, phone_number, address }) => {
-            let lat, long;
+            let lat = 21.0280, long = 105.8510;
+
             let geocoding_data = await service.geocodingApi.getGeocodingData(address);
             if (geocoding_data.status === 'OK') {
                 lat  = geocoding_data.results[0].geometry.location.lat;
@@ -42,10 +43,12 @@ export default {
                 update.address = address;
 
                 let geocoding_data = await service.geocodingApi.getGeocodingData(address);
-                console.log('geocoding_data', geocoding_data);
                 if (geocoding_data.status === 'OK') {
                     update.latitude  = geocoding_data.results[0].geometry.location.lat;
                     update.longitude = geocoding_data.results[0].geometry.location.lng;
+                } else {
+                    update.latitude  = 21.0280;
+                    update.longitude = 105.8510;
                 }
             }
 
@@ -63,14 +66,17 @@ export default {
         removeStore: async (root, { id }) => {
             let store_removed = await Store.findOneAndUpdate({
                 _id: id,
-                is_active: true
+                $or: [
+                    { is_active: true },
+                    { is_active: null }
+                ]
             }, { $set: { is_active: false } }, { new: true });
 
             if (!store_removed)
                 throw new Exception('Can not remove Store', ExceptionCode.CAN_NOT_REMOVE_STORE);
 
             return {
-                message: 'Remove Publisher successful'
+                message: 'Remove Store successful'
             };
         }
     },
@@ -86,7 +92,7 @@ export default {
             args = new Validate(args)
                 .joi({
                     offset: Joi.number().integer().optional().min(0).default(0),
-                    limit: Joi.number().integer().optional().min(5).default(20)
+                    limit: Joi.number().integer().optional().min(5).default(50)
                 }).validate();
 
             let filter: any = {};
@@ -99,7 +105,10 @@ export default {
             }
 
             if (_.isBoolean(args.is_active)) {
-                filter.is_active = args.is_active;
+                filter.$or = [
+                    { is_active: args.is_active },
+                    { is_active: null }
+                ];
             }
 
             let list = Store
@@ -132,16 +141,36 @@ export default {
     },
     Store: {
         total_staff: async (store) => {
-            return await Staff.find({ store: store._id, is_active: true }).countDocuments();
+            return await Staff.find({
+                store: store._id, $or: [
+                    { is_active: true },
+                    { is_active: null }
+                ]
+            }).countDocuments();
         },
         staffs: async (store) => {
-            return await Staff.find({ store: store._id, is_active: true });
+            return await Staff.find({
+                store: store._id, $or: [
+                    { is_active: true },
+                    { is_active: null }
+                ]
+            });
         },
         total_book: async (store) => {
-            return await BookStore.find({ store: store._id, is_active: true }).countDocuments();
+            return await BookStore.find({
+                store: store._id, $or: [
+                    { is_active: true },
+                    { is_active: null }
+                ]
+            }).countDocuments();
         },
         books: async (store) => {
-            return await BookStore.find({ store: store._id, is_active: true });
+            return await BookStore.find({
+                store: store._id, $or: [
+                    { is_active: true },
+                    { is_active: null }
+                ]
+            });
 
         }
     }

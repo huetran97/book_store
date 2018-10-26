@@ -7,9 +7,15 @@ const cart = gql`
         number: Int!
     },
     type CartOutPut {
-        book_store: String!
-        promotion: String
-        number: Int!
+        id: String
+        user: User
+        book: Book
+        store: Store
+        promotion: Promotion
+        number: Int
+        price: Float
+        created_at: Float,
+        updated_at: Float
     },
   
 `;

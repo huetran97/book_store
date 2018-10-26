@@ -20,7 +20,7 @@ export default {
             new Validate({ offset, limit })
                 .joi({
                     offset: Joi.number().min(0),
-                    limit: Joi.number().min(5).max(50)
+                    limit: Joi.number().min(5).max(100)
                 }).validate();
 
             let filter = [];

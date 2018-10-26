@@ -2,6 +2,7 @@ import { Book, BookStore, Store } from '@private/models';
 import Exception from '../../../exeptions/Exception';
 import ExceptionCode from '../../../exeptions/ExceptionCode';
 import * as _ from 'lodash';
+import { ObjectID } from 'bson';
 
 export default {
     Query: {
@@ -35,21 +36,32 @@ export default {
             if (bookStoreData)
                 throw new Exception('Book is exist in Store', ExceptionCode.BOOK_IS_EXIST_IN_THIS_STORE);
 
+            let bookData  = await Book.findOne({_id: book});
+            if(!bookData)
+                throw new Exception('Book not found', ExceptionCode.BOOK_NOT_FOUND);
+
+            if(amount > bookData.amount)
+                throw new Exception('Amount Book at Store must be less than Amount Book', ExceptionCode.MUST_LESS_THAN_AMOUNT);
+            
             let amountData: any = await BookStore.aggregate(
                 [
                     {
+                        $match: {
+                            book: new ObjectID(book),
+                        }
+                    },
+                    {
                         $group:
                             {
-                                _id: { book: book },
+                                _id: {book:'$book'},
                                 amount: { $sum: '$amount' },
-                                book: { $first: '$book' }
 
                             }
                     },
                     {
                         $lookup: {
                             from: 'book',
-                            localField: 'book',
+                            localField: '_id.book',
                             foreignField: '_id',
                             as: 'bookDetail'
                         }
@@ -57,7 +69,8 @@ export default {
 
                 ]
             );
-            if (amountData.length >0) {
+            console.log('amountData', JSON.stringify(amountData));
+            if (amountData.length > 0) {
 
                 let exist = amountData[0].bookDetail[0].amount - amountData[0].amount;
 

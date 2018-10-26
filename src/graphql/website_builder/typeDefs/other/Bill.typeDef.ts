@@ -4,12 +4,11 @@ const bill = gql`
     type Bill{
         id: String
         user: User
-        cart: CartOutPut
+        cart: [CartOutPut]
         distance: Float
         payment_type: PAYMENT_TYPE
         isPaid: Boolean
         status: String
-        number: Float
         shipping: ShippingCost
         shipping_address: String
         created_at: Float,

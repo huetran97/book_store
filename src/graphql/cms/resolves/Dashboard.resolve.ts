@@ -1,6 +1,7 @@
 import { Book, BookStore, Cart, Store } from '@private/models';
 import { ObjectID } from 'bson';
 import moment = require('moment-timezone');
+import * as _ from 'lodash';
 
 export default {
     Query: {
@@ -44,13 +45,14 @@ export default {
     GoodsSale: {
         total: async ({ from_date, to_date }) => {
             let total = 0;
-
             let cart_data = await Cart.aggregate(
                 [
                     {
                         $match: {
-                            created_at: { $gte: moment(from_date).toDate(), $lte: moment(to_date).toDate() }
-                        }
+                            created_at: {
+                                $gte: moment(from_date, 'YYYYMMDD').toDate(),
+                                $lte: moment(to_date, 'YYYYMMDD').toDate()
+                            }                        }
                     },
                     {
                         $project: {
@@ -75,7 +77,12 @@ export default {
             return total;
         },
         data: async ({ from_date, to_date }) => {
-            let store_data = await Store.find({ is_active: true });
+            let store_data = await Store.find({
+                $or: [
+                    { is_active: true },
+                    { is_active: null }
+                ]
+            });
             let data       = [];
             for (let store of store_data) {
                 let item: any = {};
@@ -86,7 +93,10 @@ export default {
                     [
                         {
                             $match: {
-                                created_at: { $gte: moment(from_date).toDate(), $lte: moment(to_date).toDate() },
+                                created_at: {
+                                    $gte: moment(from_date, 'YYYYMMDD').toDate(),
+                                    $lte: moment(to_date, 'YYYYMMDD').toDate()
+                                },
                                 store: new ObjectID(store._id)
                             }
                         },
@@ -123,8 +133,10 @@ export default {
                 [
                     {
                         $match: {
-                            created_at: { $gte: moment(from_date).toDate(), $lte: moment(to_date).toDate() }
-                        }
+                            created_at: {
+                                $gte: moment(from_date, 'YYYYMMDD').toDate(),
+                                $lte: moment(to_date, 'YYYYMMDD').toDate()
+                            }                        }
                     },
                     {
                         $project: {
@@ -148,8 +160,14 @@ export default {
             return total;
         },
         data: async ({ from_date, to_date }) => {
-            let store_data = await Store.find({ is_active: true });
+            let store_data = await Store.find({
+                $or: [
+                    { is_active: true },
+                    { is_active: null }
+                ]
+            });
             let data       = [];
+
             for (let store of store_data) {
                 let item: any = {};
                 item.store    = store;
@@ -159,20 +177,33 @@ export default {
                     created_at: {
                         $gte: moment(from_date).toDate(),
                         $lte: moment(to_date).toDate()
-                    }
+                    },
+                    store: store._id
                 }).distinct('book');
 
                 let book_data = await Book.aggregate(
                     [
                         {
                             $match: {
-                                created_at: { $gte: moment(from_date).toDate(), $lte: moment(to_date).toDate() },
+                                created_at: {
+                                    $gte: moment(from_date, 'YYYYMMDD').toDate(),
+                                    $lte: moment(to_date, 'YYYYMMDD').toDate()
+                                },
                                 _id: { $in: bookId }
                             }
                         },
                         {
+                            $lookup: {
+                                from: 'book_store',
+                                localField: '_id',
+                                foreignField: 'book',
+                                as: 'book_store_'
+                            }
+                        },
+                        { $unwind: '$book_store_' },
+                        {
                             $project: {
-                                total: { $multiply: ['$amount', '$historical_cost'] }
+                                total: { $multiply: ['$book_store_.amount', '$historical_cost'] }
 
                             }
 
@@ -204,8 +235,10 @@ export default {
                 [
                     {
                         $match: {
-                            created_at: { $gte: moment(from_date).toDate(), $lte: moment(to_date).toDate() }
-                        }
+                            created_at: {
+                                $gte: moment(from_date, 'YYYYMMDD').toDate(),
+                                $lte: moment(to_date, 'YYYYMMDD').toDate()
+                            }                        }
                     },
                     {
                         $lookup: {
@@ -243,7 +276,12 @@ export default {
             return total;
         },
         data: async ({ from_date, to_date }) => {
-            let store_data = await Store.find({ is_active: true });
+            let store_data = await Store.find({
+                $or: [
+                    { is_active: true },
+                    { is_active: null }
+                ]
+            });
             let data       = [];
             for (let store of store_data) {
                 let item: any = {};
@@ -255,7 +293,8 @@ export default {
                         {
                             $match: {
                                 created_at: {
-                                    $gte: moment(from_date).toDate(), $lte: moment(to_date).toDate(),
+                                    $gte: moment(from_date, 'YYYYMMDD').toDate(),
+                                    $lte: moment(to_date, 'YYYYMMDD').toDate()
                                 },
                                 store: new ObjectID(store._id)
 

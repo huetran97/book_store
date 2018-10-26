@@ -5,7 +5,9 @@ const promotion = gql`
         id: String
         book: Book
         event: Event
-        discount: Float
+        discount: Float,
+        begin_date: Float,
+        end_date: Float,
     },
     type ListPromotion{
         offset: Int,

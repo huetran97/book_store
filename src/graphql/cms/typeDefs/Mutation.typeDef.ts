@@ -269,16 +269,21 @@ const mutation = gql`
         addPromotion(
             book: String!
             event: String!
-            discount: String!
+            discount: Float!
         ): Event
 
         updatePromotion(
             id: String!
             book: String
             event: String
-            discount: String
+            discount: Float
         ): Event
 
+        login(
+            user_name: String!,
+            password: String!,
+        ): UserLogin
+        
         removePromotion(
             id: String!
         ): StringMessage

@@ -1,7 +1,7 @@
 import { ShippingCost, Store } from '@private/models';
 import Exception from '../../../exeptions/Exception';
 import ExceptionCode from '../../../exeptions/ExceptionCode';
-// import service from '@private/services/index';
+import service from '@private/services/index';
 import { getDistanceFromLatLonInKm } from '../../../helpers/DistanceFromLatLong';
 
 export default {
@@ -12,13 +12,11 @@ export default {
             if (!store_data)
                 throw new Exception('Store not found', ExceptionCode.STORE_NOT_FOUND);
 
-            // let geocoding_data = await service.geocodingApi.getGeocodingData(address);
-            // if (geocoding_data.status === 'OK') {
-            //     latitude  = geocoding_data.results[0].geometry.location.lat;
-            //     longitude = geocoding_data.results[0].geometry.location.lng;
-            // } else {
-            //     throw new Exception('Unable to read location!', ExceptionCode.UNABLE_TO_READ_LOCATION);
-            // }
+            let geocoding_data = await service.geocodingApi.getGeocodingData(address);
+            if (geocoding_data.status === 'OK') {
+                latitude  = geocoding_data.results[0].geometry.location.lat;
+                longitude = geocoding_data.results[0].geometry.location.lng;
+            }
 
             let distance = getDistanceFromLatLonInKm(store_data.latitude, store_data.longitude, latitude, longitude);
 

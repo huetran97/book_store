@@ -25,6 +25,7 @@ import Staff from './other/Staff.typeDef';
 import BookStore from './other/BookStore.typeDef';
 import DashBoard from './other/Dashboard.typeDef';
 import BankPartner from './other/BankPartner.typeDef';
+import UserLogin from './other/UserLogin.typeDef';
 
 export default [
     mutation,
@@ -53,5 +54,6 @@ export default [
     Staff,
     BookStore,
     DashBoard,
-    BankPartner
+    BankPartner,
+    UserLogin
 ];

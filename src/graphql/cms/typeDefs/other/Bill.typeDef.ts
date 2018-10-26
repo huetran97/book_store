@@ -9,7 +9,6 @@ const bill = gql`
         isPaid: Boolean
         distance: Float
         status: String
-        number: Float
         shipping: ShippingCost
         shipping_address: String
         created_at: Float,

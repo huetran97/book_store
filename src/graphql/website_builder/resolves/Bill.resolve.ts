@@ -20,7 +20,7 @@ export default {
             args = new Validate(args)
                 .joi({
                     offset: Joi.number().integer().optional().min(0).default(0),
-                    limit: Joi.number().integer().optional().min(5).default(20)
+                    limit: Joi.number().integer().optional().min(5).default(100)
                 }).validate();
 
             let filter: any = { user: user._id };
@@ -144,4 +144,16 @@ export default {
         },
 
     },
+    CartOutPut: {
+        book: async (cart) => {
+            console.log('cart', cart);
+            return await Book.findOne({ _id: cart.book });
+
+        },
+        store: async (cart) => {
+            return await Store.findOne({ _id: cart.store });
+
+        }
+
+    }
 };

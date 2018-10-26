@@ -64,8 +64,10 @@ export default {
         removeSubject: async (root, { id }) => {
             let subject_removed = await Subject.findOneAndUpdate({
                 _id: id,
-                is_active: true
-            }, { $set: { is_active: false } }, { new: true });
+                $or:[
+                    { is_active: true },
+                    {is_active: null}
+                ]            }, { $set: { is_active: false } }, { new: true });
 
             if (!subject_removed)
                 throw new Exception('Can not remove Subject ', ExceptionCode.CAN_NOT_REMOVE_SUBJECT);
@@ -83,13 +85,16 @@ export default {
             args = new Validate(args)
                 .joi({
                     offset: Joi.number().integer().optional().min(0).default(0),
-                    limit: Joi.number().integer().optional().min(5).default(20)
+                    limit: Joi.number().integer().optional().min(5).default(100)
                 }).validate();
 
             let filter: any = {};
 
             if (_.isBoolean(args.is_active)) {
-                filter.is_active = args.is_active;
+                filter.$or = [
+                    {is_active: args.is_active},
+                    {is_active: null}
+                ];
             }
 
             if (args.domain_knowledge) {

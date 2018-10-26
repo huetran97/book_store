@@ -16,7 +16,8 @@ import Staff from './Staff.resolve';
 import BookStore from './BookStore.resolve';
 import DashBoard from './Dashboard.resolve';
 import BankPartner from './BankPartner.resolve';
-// import StaffCmsGroup from './Staf'
+import StaffCmsGroup from './StaffCmsGroup.resolve';
+import Login from './Login.resolve';
 
 export default [
     User,
@@ -36,5 +37,7 @@ export default [
     Staff,
     BookStore,
     DashBoard,
-    BankPartner
+    BankPartner,
+    StaffCmsGroup,
+    Login,
 ];

@@ -65,8 +65,10 @@ export default {
         removeDomainKnowledge: async (root, { id }) => {
             let domain_knowLedge_removed = await DomainKnowledge.findOneAndUpdate({
                 _id: id,
-                is_active: true
-            }, { $set: { is_active: false } }, { new: true });
+                $or:[
+                    { is_active: true },
+                    {is_active: null}
+                ]            }, { $set: { is_active: false } }, { new: true });
 
             if (!domain_knowLedge_removed)
                 throw new Error('Can not remove Domain Knowledge');
@@ -87,8 +89,8 @@ export default {
         domainKnowledges: async (root, args) => {
             args = new Validate(args)
                 .joi({
-                    offset: Joi.number().integer().optional().min(0).default(0),
-                    limit: Joi.number().integer().optional().min(5).default(20)
+                    offset: Joi.number().integer().optional().min(0),
+                    limit: Joi.number().integer().optional().min(5)
                 }).validate();
 
             let filter: any = {};
@@ -102,8 +104,11 @@ export default {
 
             let list = DomainKnowledge
                 .find(filter)
-                .skip(args.offset)
-                .limit(args.limit);
+
+            if (args.offset)
+                list.skip(args.offset);
+            if (args.limit)
+                list.skip(args.limit);
 
             return {
                 list_domain_knowledge: await list,

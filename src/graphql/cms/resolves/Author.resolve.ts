@@ -1,6 +1,5 @@
 import { Author } from '@private/models';
 import { changeAlias } from '../../../helpers';
-import { User } from '@private/models/index';
 import Validate from '../../../helpers/validate';
 import * as Joi from 'joi';
 import * as _ from 'lodash';
@@ -43,7 +42,10 @@ export default {
         removeAuthor: async (root, { id }) => {
             let authorRemoved = await Author.findOneAndUpdate({
                 _id: id,
-                is_active: true
+                $or:[
+                    { is_active: true },
+                    {is_active: null}
+                ]
             }, { $set: { is_active: false } }, { new: true });
 
             if (!authorRemoved)
@@ -65,8 +67,8 @@ export default {
         authors: async (root, args) => {
             args = new Validate(args)
                 .joi({
-                    offset: Joi.number().integer().optional().min(0).default(0),
-                    limit: Joi.number().integer().optional().min(5).default(20)
+                    offset: Joi.number().integer().optional().min(0),
+                    limit: Joi.number().integer().optional().min(5)
                 }).validate();
 
             let filter: any = {};
@@ -77,13 +79,17 @@ export default {
             }
 
             if (_.isBoolean(args.is_active)) {
-                filter.is_active = args.is_active;
+                filter.$or = [
+                    { is_active: args.is_active },
+                    { is_active: null }
+                ];
             }
+            let list = Author.find(filter);
 
-            let list = Author
-                .find(filter)
-                .skip(args.offset)
-                .limit(args.limit);
+            if (args.offset)
+                list.skip(args.offset);
+            if (args.limit)
+                list.skip(args.limit);
 
             return {
                 list_author: await list,

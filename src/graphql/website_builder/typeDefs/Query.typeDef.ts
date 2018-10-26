@@ -8,7 +8,15 @@ const query = gql`
         @requireLogged
 
         book(book: String!): Book,
-        books(offset: Int =0, limit: Int, store:String, search: String, is_hot_sale:Boolean, is_newest: Boolean): ListBook
+        books(offset: Int =0, 
+            limit: Int, 
+            store:String, 
+            domain_knowledge: String,
+            language: String,
+            subject: String,
+            search: String,
+            is_hot_sale:Boolean,
+            is_newest: Boolean): ListBook
         
         issuingCompany(
             id: String!
@@ -60,6 +68,8 @@ const query = gql`
         promotions(
             offset: Int,
             limit: Int,
+            book: String,
+            event:String
         ): ListPromotion
 
         author(
@@ -103,7 +113,7 @@ const query = gql`
         bills(
             offset: Int,
             limit: Int,
-        ): Bill
+        ): ListBill
         @requireLogged
 
         comment(id: String!):Comment

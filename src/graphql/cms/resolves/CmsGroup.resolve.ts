@@ -16,8 +16,9 @@ export default {
                 }).validate();
 
             let data = await CmsGroup.findOne({ _id: id });
-            if(!data)
-                throw new Exception('Cms group not found', ExceptionCode.CMS_GROUP_NOT_FOUND)
+            if (!data)
+                throw new Exception('Cms group not found', ExceptionCode.CMS_GROUP_NOT_FOUND);
+            return data;
         }
     },
     Mutation: {

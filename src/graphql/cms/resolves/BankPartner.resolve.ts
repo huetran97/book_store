@@ -100,7 +100,10 @@ export default {
         removeBankPartner: async (root, { id }) => {
             let bankPartnerRemoved = await BankPartner.findOneAndUpdate({
                 _id: id,
-                is_active: true
+                $or:[
+                    { is_active: true },
+                    {is_active: null}
+                ]
             }, { $set: { is_active: false } }, { new: true });
 
             if (!bankPartnerRemoved)
@@ -116,7 +119,7 @@ export default {
             return await BankPartner.find(filter).countDocuments();
         },
         data: async ({ offset, limit, filter }: { offset: number, limit: number, filter: any }, data, { dataloaders }) => {
-            return await BankPartner.find(filter).skip(offset).limit(limit).sort({ _id: -1 });
+            return await BankPartner.find(filter).sort({ _id: -1 });
         }
     }
 };

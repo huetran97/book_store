@@ -7,6 +7,10 @@ import ExceptionCode from '../../../exeptions/ExceptionCode';
 export default {
     Mutation: {
         addPromotion: async (root, { book, event, discount }) => {
+            let promotion_data = await Promotion.findOne({ book: book, event: event });
+            if (promotion_data)
+                throw new Exception('Promotion is exist', ExceptionCode.PROMOTION_IS_EXIST);
+
             let promotion = new Promotion({
                 book: book,
                 event: event,
@@ -33,10 +37,10 @@ export default {
 
             }
 
-            if(discount)
+            if (discount)
                 update.discount = discount;
 
-             let promotion_updated = await Promotion.findOneAndUpdate({ _id: id }, { $set: update }, { new: true });
+            let promotion_updated = await Promotion.findOneAndUpdate({ _id: id }, { $set: update }, { new: true });
 
             if (!promotion_updated)
                 throw new Exception('Can not updated Promotion', ExceptionCode.CAN_NOT_UPDATE_PROMOTION);
@@ -62,14 +66,16 @@ export default {
         promotions: async (root, args) => {
             args = new Validate(args)
                 .joi({
-                    offset: Joi.number().integer().optional().min(0).default(0),
-                    limit: Joi.number().integer().optional().min(5).default(20)
+                    offset: Joi.number().integer().optional().min(0),
+                    limit: Joi.number().integer().optional().min(5)
                 }).validate();
 
-            let list = Event
-                .find({})
-                .skip(args.offset)
-                .limit(args.limit);
+            let list = Promotion.find({});
+
+            if (args.offset)
+                list.skip(args.offset);
+            if (args.limit)
+                list.skip(args.limit);
 
             return {
                 list_promotion: await list,
@@ -88,6 +94,14 @@ export default {
         },
         event: async (promotion) => {
             return await Event.findOne({ _id: promotion.event });
+        },
+        begin_date: async (promotion) => {
+            let event = await Event.findOne({ _id: promotion.event });
+            return event.begin_time;
+        },
+        end_date: async (promotion) => {
+            let event = await Event.findOne({ _id: promotion.event });
+            return event.end_time;
         }
     }
 };

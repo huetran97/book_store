@@ -57,21 +57,26 @@ export default {
         languages: async (root, args) => {
             args = new Validate(args)
                 .joi({
-                    offset: Joi.number().integer().optional().min(0).default(0),
-                    limit: Joi.number().integer().optional().min(5).default(20)
+                    offset: Joi.number().integer().optional().min(0),
+                    limit: Joi.number().integer().optional().min(5)
                 }).validate();
 
             let filter: any = {};
 
 
             if (_.isBoolean(args.is_active)) {
-                filter.is_active = args.is_active;
+                filter.$or = [
+                    { is_active: args.is_active },
+                    { is_active: null }
+                ];
             }
 
-            let list = Language
-                .find(filter)
-                .skip(args.offset)
-                .limit(args.limit);
+            let list = Language.find(filter);
+
+            if (args.offset)
+                list.skip(args.offset);
+            if (args.limit)
+                list.skip(args.limit);
 
             return {
                 list_language: await list,
